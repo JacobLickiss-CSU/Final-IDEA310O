@@ -304,10 +304,16 @@ MonoBehaviour:
   model: {fileID: 8231392007390512140}
   modelAnimator: {fileID: 3427304269761332428}
   gravityValue: -9.81
-  walkSpeed: -1
+  walkSpeed: 2
   runSpeed: 5
-  sprintSpeed: -1
+  sprintSpeed: 9
   turnSpeed: 10
+  walkThreshhold: 0.5
+  sprintHold: 0.75
+  rollSpeed: 7
+  rollTime: 1
+  rollIStart: 0.25
+  rollIEnd: 0.85
 --- !u!143 &7856368613324904279
 CharacterController:
   m_ObjectHideFlags: 0
