@@ -314,6 +314,20 @@ MonoBehaviour:
   rollTime: 1
   rollIStart: 0.25
   rollIEnd: 0.85
+  attackLightTime: 0.75
+  attackLightHoldTime: 0.4
+  attackLightActiveStart: 0.29166666
+  attackLightActiveEnd: 0.5833333
+  attackLightMoveSpeed: 4
+  attackLightMoveStart: 0.29166666
+  attackLightMoveEnd: 0.5
+  attackHeavyTime: 1.6666666
+  attackHeavyHoldTime: 0.73333335
+  attackHeavyActiveStart: 0.6666667
+  attackHeavyActiveEnd: 1
+  attackHeavyMoveSpeed: 4
+  attackHeavyMoveStart: 0.5833333
+  attackHeavyMoveEnd: 0.7916667
 --- !u!143 &7856368613324904279
 CharacterController:
   m_ObjectHideFlags: 0
