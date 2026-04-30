@@ -31,6 +31,10 @@ public class PlayerManager : MonoBehaviour
 
     public float walkThreshhold = .5f;
 
+    public float walkTimeThreshhold = .25f;
+
+    public float walkTimer = 0f;
+
     public float sprintHold = .75f;
 
     public PlayerState State { get; private set; } = PlayerState.Ready;
@@ -244,20 +248,36 @@ public class PlayerManager : MonoBehaviour
             MovementMode mode = MovementMode.Run;
             if(moveValue.magnitude < walkThreshhold)
             {
-                mode = MovementMode.Walk;
+                if(walkTimer >= walkTimeThreshhold)
+                {
+                    mode = MovementMode.Walk;
+                }
+                else
+                {
+                    walkTimer += Time.deltaTime;
+                    return;
+                }
             }
-            if(IsSprinting)
+            else
+            {
+                walkTimer = 0f;
+            }
+
+            if (IsSprinting)
             {
                 mode = MovementMode.Sprint;
             }
 
             // TODO move somewhere more organized
-            switch (mode)
+            if (!modelAnimator.IsInTransition(0))
             {
-                case MovementMode.Run: { modelAnimator.Play(Animator.StringToHash("RobogirlArmature|Run")); break; }
-                case MovementMode.Walk: { modelAnimator.Play(Animator.StringToHash("RobogirlArmature|Walk")); break; }
-                case MovementMode.Sprint: { modelAnimator.Play(Animator.StringToHash("RobogirlArmature|Sprint")); break; }
-                default: { modelAnimator.Play(Animator.StringToHash("RobogirlArmature|Run")); break; }
+                switch (mode)
+                {
+                    case MovementMode.Run: { modelAnimator.CrossFade(Animator.StringToHash("RobogirlArmature|Run"), 0.2f); break; }
+                    case MovementMode.Walk: { modelAnimator.CrossFade(Animator.StringToHash("RobogirlArmature|Walk"), 0.2f); break; }
+                    case MovementMode.Sprint: { modelAnimator.CrossFade(Animator.StringToHash("RobogirlArmature|Sprint"), 0.2f); break; }
+                    default: { modelAnimator.CrossFade(Animator.StringToHash("RobogirlArmature|Run"), 0.2f); break; }
+                }
             }
 
             UpdateTargetFacing();
@@ -281,7 +301,10 @@ public class PlayerManager : MonoBehaviour
         else if(State == PlayerState.Ready)
         {
             // TODO move somewhere more organized
-            modelAnimator.Play(Animator.StringToHash("RobogirlArmature|Idle"));
+            if (!modelAnimator.IsInTransition(0))
+            {
+                modelAnimator.CrossFade(Animator.StringToHash("RobogirlArmature|Idle"), 0.2f);
+            }
         }
     }
 
@@ -319,7 +342,7 @@ public class PlayerManager : MonoBehaviour
         State = PlayerState.Rolling;
         LookTowardsFacing(true, true);
         modelAnimator.speed = 1.5f;
-        modelAnimator.Play(Animator.StringToHash("RobogirlArmature|Roll"));
+        modelAnimator.CrossFade(Animator.StringToHash("RobogirlArmature|Roll"), 0.2f);
     }
 
     void ContinueRoll()
@@ -343,6 +366,7 @@ public class PlayerManager : MonoBehaviour
         rollTimer = 0;
         State = endState;
         modelAnimator.speed = 1.0f;
+        modelAnimator.Play(Animator.StringToHash("RobogirlArmature|Idle"));
     }
 
     void LookTowardsFacing(bool immediate = false, bool getFacing = false)
@@ -419,7 +443,7 @@ public class PlayerManager : MonoBehaviour
         LookTowardsFacing(true, true);
 
         attackIndex = GetNextAttackIndex(attackIndex, attackType);
-        modelAnimator.Play(Animator.StringToHash(attackIndex.GetAnimation()), 0, 0);
+        modelAnimator.CrossFade(Animator.StringToHash(attackIndex.GetAnimation()), 0.2f, 0, 0);
     }
 
     AttackIndex GetNextAttackIndex(AttackIndex currentIndex, PlayerState attackType)
@@ -477,7 +501,7 @@ public class PlayerManager : MonoBehaviour
         attackTimer = 0;
         State = endState;
         attackIndex = AttackIndex.None;
-        modelAnimator.Play(Animator.StringToHash("RobogirlArmature|Idle"));
+        modelAnimator.CrossFade(Animator.StringToHash("RobogirlArmature|Idle"), 0.2f);
     }
 
     public bool IsAttacking()
