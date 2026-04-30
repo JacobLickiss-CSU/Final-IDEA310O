@@ -233,6 +233,27 @@ public class PlayerManager : MonoBehaviour
         }
     }
 
+    public void SetFacing(Vector2 facing, bool force = false)
+    {
+        if(State == PlayerState.Ready || force)
+        {
+            targetFacing = facing;
+            LookTowardsFacing();
+        }
+    }
+
+    public void FacePosition(Vector3 targetPosition)
+    {
+        Vector2 newFacing = new Vector2(targetPosition.x - transform.position.x, targetPosition.z - transform.position.z);
+        newFacing.Normalize();
+        targetFacing = newFacing;
+    }
+
+    public Vector2 GetFacing()
+    {
+        return targetFacing;
+    }
+
     void HandleMovement()
     {
         if (IsAttackHolding) return;
@@ -280,9 +301,17 @@ public class PlayerManager : MonoBehaviour
                 }
             }
 
-            UpdateTargetFacing();
+            Vector2 tempFacing = new Vector2(0, 0);
+            if(!Camera.IsTargetLocked)
+            {
+                UpdateTargetFacing();
+            }
+            else
+            {
+                tempFacing = GetInputFacing();
+            }
 
-            float speed = 0f;
+                float speed = 0f;
             switch(mode)
             {
                 case MovementMode.Run: { speed = runSpeed; break; }
@@ -291,7 +320,7 @@ public class PlayerManager : MonoBehaviour
                 default: { speed = walkSpeed; break; }
             }
 
-            Vector3 finalMove = new Vector3(targetFacing.x, 0, targetFacing.y) * speed;
+            Vector3 finalMove = new Vector3(tempFacing.magnitude > 0 ? tempFacing.x : targetFacing.x, 0, tempFacing.magnitude > 0 ? tempFacing.y : targetFacing.y) * speed;
 
             // TODO fall even when not moving
             finalMove.y += gravityValue;
@@ -309,6 +338,15 @@ public class PlayerManager : MonoBehaviour
     }
 
     void UpdateTargetFacing()
+    {
+        Vector2 facing = GetInputFacing();
+        if (facing.magnitude > 0)
+        {
+            targetFacing = facing;
+        }
+    }
+
+    Vector2 GetInputFacing()
     {
         Vector2 moveValue = moveAction.ReadValue<Vector2>();
         if (moveValue.magnitude > 0)
@@ -328,8 +366,10 @@ public class PlayerManager : MonoBehaviour
             Vector2 totalMovement = forwardMovement + sideMovement;
             totalMovement.Normalize();
 
-            targetFacing = totalMovement;
+            return totalMovement;
         }
+
+        return new Vector2(0, 0);
     }
 
     void StartRoll()
@@ -439,8 +479,13 @@ public class PlayerManager : MonoBehaviour
             attackTimer = 0;
         }
 
+        if (Camera.IsTargetLocked)
+        {
+            FacePosition(Camera.LockTarget.GetComponent<Enemy>().GetFocusPosition());
+        }
+
         State = attackType;
-        LookTowardsFacing(true, true);
+        LookTowardsFacing(true, !Camera.IsTargetLocked);
 
         attackIndex = GetNextAttackIndex(attackIndex, attackType);
         modelAnimator.CrossFade(Animator.StringToHash(attackIndex.GetAnimation()), 0.2f, 0, 0);
