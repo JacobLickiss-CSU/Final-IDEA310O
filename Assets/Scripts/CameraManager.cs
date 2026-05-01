@@ -32,6 +32,10 @@ public class CameraManager : MonoBehaviour
 
     public float LockLookSpeed = 10f;
 
+    public float LockJoystickSensitivity = 0.5f;
+
+    public float LockMouseSensitivity = 8f;
+
     public bool IsTargetLocked
     {
         get
@@ -151,7 +155,9 @@ public class CameraManager : MonoBehaviour
     public void CheckSwitchLock()
     {
         Vector2 lookValue = lookAction.ReadValue<Vector2>();
-        if (IsTargetLocked && Math.Abs(lookValue.x) > .5f)
+        if(lookValue.x != 0) Debug.Log(Math.Abs(lookValue.x));
+        // Value checking just under or far above 1 allow for both mouse and thumbstick use
+        if (IsTargetLocked && ((Math.Abs(lookValue.x) > LockJoystickSensitivity && Math.Abs(lookValue.x) < 1f) || (Math.Abs(lookValue.x) > LockMouseSensitivity)))
         {
             if(!lockSwitched)
             {
@@ -159,7 +165,7 @@ public class CameraManager : MonoBehaviour
                 lockSwitched = true;
             }
         }
-        else
+        else if(Math.Abs(lookValue.x) != 1f)
         {
             lockSwitched = false;
         }
