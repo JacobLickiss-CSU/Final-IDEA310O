@@ -75,6 +75,10 @@ MonoBehaviour:
   TargetFocus: {fileID: 8292589286022776509}
   MaxHealth: 50
   CurrentHealth: 50
+  MaxPoise: 25
+  CurrentPoise: 25
+  PoiseRegen: 5
+  StaggerTime: 2
 --- !u!1 &2726828465177994592
 GameObject:
   m_ObjectHideFlags: 0

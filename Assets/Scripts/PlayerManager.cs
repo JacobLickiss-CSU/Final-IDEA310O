@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using System;
 
 public class PlayerManager : MonoBehaviour
 {
@@ -91,6 +92,10 @@ public class PlayerManager : MonoBehaviour
 
     private AttackIndex attackIndex;
 
+    public int attackLightDamage = 15;
+
+    public int attackHeavyDamage = 35;
+
     private float attackTimer = 0f;
     public bool IsAttackActive
     {
@@ -107,6 +112,10 @@ public class PlayerManager : MonoBehaviour
             return false;
         }
     }
+
+    public long AttackId { get; internal set; }
+
+    public int AttackDamage { get; internal set; }
 
     public float AttackTime
     {
@@ -474,6 +483,9 @@ public class PlayerManager : MonoBehaviour
             return;
         }
 
+        SetAttackId();
+        SetAttackDamage(attackType);
+
         if (IsAttackHolding)
         {
             attackTimer = 0;
@@ -489,6 +501,26 @@ public class PlayerManager : MonoBehaviour
 
         attackIndex = GetNextAttackIndex(attackIndex, attackType);
         modelAnimator.CrossFade(Animator.StringToHash(attackIndex.GetAnimation()), 0.2f, 0, 0);
+    }
+
+    void SetAttackId()
+    {
+        // A random attack ID is used to prevent duplicate damage
+        System.Random random = new System.Random();
+        AttackId = random.Next(); // This returns a plain 32 bit int instead of a long, but should suffice
+    }
+
+    void SetAttackDamage(PlayerState attackType)
+    {
+        if(attackType == PlayerState.AttackingLight)
+        {
+            AttackDamage = attackLightDamage;
+        }
+
+        if (attackType == PlayerState.AttackingHeavy)
+        {
+            AttackDamage = attackHeavyDamage;
+        }
     }
 
     AttackIndex GetNextAttackIndex(AttackIndex currentIndex, PlayerState attackType)

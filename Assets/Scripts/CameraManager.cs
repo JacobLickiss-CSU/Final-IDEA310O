@@ -112,7 +112,7 @@ public class CameraManager : MonoBehaviour
         RaycastHit hit;
         if (Physics.Raycast(CameraPivot.transform.position, cameraDirection, out hit, cameraDirection.magnitude))
         {
-            if (hit.collider.gameObject.tag != "Player" && hit.collider.gameObject.tag != "Enemy")
+            if (hit.collider.gameObject.tag != "Player" && hit.collider.gameObject.tag != "Enemy" && hit.collider.gameObject.tag != "PlayerWeapon")
             {
                 transform.position = hit.point;
             }
@@ -155,7 +155,6 @@ public class CameraManager : MonoBehaviour
     public void CheckSwitchLock()
     {
         Vector2 lookValue = lookAction.ReadValue<Vector2>();
-        if(lookValue.x != 0) Debug.Log(Math.Abs(lookValue.x));
         // Value checking just under or far above 1 allow for both mouse and thumbstick use
         if (IsTargetLocked && ((Math.Abs(lookValue.x) > LockJoystickSensitivity && Math.Abs(lookValue.x) < 1f) || (Math.Abs(lookValue.x) > LockMouseSensitivity)))
         {
