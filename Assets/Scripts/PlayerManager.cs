@@ -18,6 +18,8 @@ public class PlayerManager : MonoBehaviour
 
     private InputAction attackHeavyAction;
 
+    private InputAction blockAction;
+
     public Animator modelAnimator;
 
     public float gravityValue = -9.81f;
@@ -181,6 +183,15 @@ public class PlayerManager : MonoBehaviour
         }
     }
 
+    bool isBlocking = false;
+    public bool IsBlocking
+    {
+        get
+        {
+            return isBlocking;
+        }
+    }
+
     private Vector2 targetFacing;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -203,6 +214,7 @@ public class PlayerManager : MonoBehaviour
         sprintAction = InputSystem.actions.FindAction("Sprint");
         attackLightAction = InputSystem.actions.FindAction("AttackLight");
         attackHeavyAction = InputSystem.actions.FindAction("AttackHeavy");
+        blockAction = InputSystem.actions.FindAction("Block");
     }
 
     // Update is called once per frame
@@ -212,6 +224,7 @@ public class PlayerManager : MonoBehaviour
         CheckSprinting();
         HandleMovement();
         LookTowardsFacing();
+        HandleBlocking();
 
         if(State == PlayerState.Rolling)
         {
@@ -298,6 +311,16 @@ public class PlayerManager : MonoBehaviour
                 mode = MovementMode.Sprint;
             }
 
+            if(IsBlocking)
+            {
+                switch (mode)
+                {
+                    case MovementMode.Run: { mode = MovementMode.BlockingRun; break; }
+                    case MovementMode.Walk: { mode = MovementMode.BlockingWalk; break; }
+                    case MovementMode.Sprint: { mode = MovementMode.BlockingSprint; break; }
+                }
+            }
+
             // TODO move somewhere more organized
             if (!modelAnimator.IsInTransition(0))
             {
@@ -306,6 +329,9 @@ public class PlayerManager : MonoBehaviour
                     case MovementMode.Run: { modelAnimator.CrossFade(Animator.StringToHash("RobogirlArmature|Run"), 0.2f); break; }
                     case MovementMode.Walk: { modelAnimator.CrossFade(Animator.StringToHash("RobogirlArmature|Walk"), 0.2f); break; }
                     case MovementMode.Sprint: { modelAnimator.CrossFade(Animator.StringToHash("RobogirlArmature|Sprint"), 0.2f); break; }
+                    case MovementMode.BlockingRun: { modelAnimator.CrossFade(Animator.StringToHash("RobogirlArmature|Block"), 0.2f); break; } // TODO
+                    case MovementMode.BlockingWalk: { modelAnimator.CrossFade(Animator.StringToHash("RobogirlArmature|Block"), 0.2f); break; } // TODO
+                    case MovementMode.BlockingSprint: { modelAnimator.CrossFade(Animator.StringToHash("RobogirlArmature|Block"), 0.2f); break; } // TODO
                     default: { modelAnimator.CrossFade(Animator.StringToHash("RobogirlArmature|Run"), 0.2f); break; }
                 }
             }
@@ -326,6 +352,9 @@ public class PlayerManager : MonoBehaviour
                 case MovementMode.Run: { speed = runSpeed; break; }
                 case MovementMode.Walk: { speed = walkSpeed; break; }
                 case MovementMode.Sprint: { speed = sprintSpeed; break; }
+                case MovementMode.BlockingRun: { speed = runSpeed; break; }
+                case MovementMode.BlockingWalk: { speed = walkSpeed; break; }
+                case MovementMode.BlockingSprint: { speed = sprintSpeed; break; }
                 default: { speed = walkSpeed; break; }
             }
 
@@ -341,7 +370,14 @@ public class PlayerManager : MonoBehaviour
             // TODO move somewhere more organized
             if (!modelAnimator.IsInTransition(0))
             {
-                modelAnimator.CrossFade(Animator.StringToHash("RobogirlArmature|Idle"), 0.2f);
+                if(IsBlocking)
+                {
+                    modelAnimator.CrossFade(Animator.StringToHash("RobogirlArmature|Block"), 0.2f);
+                }
+                else
+                {
+                    modelAnimator.CrossFade(Animator.StringToHash("RobogirlArmature|Idle"), 0.2f);
+                }
             }
         }
     }
@@ -500,7 +536,7 @@ public class PlayerManager : MonoBehaviour
         LookTowardsFacing(true, !Camera.IsTargetLocked);
 
         attackIndex = GetNextAttackIndex(attackIndex, attackType);
-        modelAnimator.CrossFade(Animator.StringToHash(attackIndex.GetAnimation()), 0.2f, 0, 0);
+        modelAnimator.CrossFade(Animator.StringToHash(attackIndex.GetAnimation()), 0.2f, 0);
     }
 
     void SetAttackId()
@@ -585,6 +621,18 @@ public class PlayerManager : MonoBehaviour
     {
         return State == PlayerState.AttackingLight || State == PlayerState.AttackingHeavy;
     }
+
+    void HandleBlocking()
+    {
+        if (blockAction.IsPressed() && State == PlayerState.Ready)
+        {
+            isBlocking = true;
+        }
+        else
+        {
+            isBlocking = false;
+        }
+    }
 }
 
 public enum PlayerState
@@ -604,7 +652,9 @@ public enum MovementMode
     Walk,
     Run,
     Sprint,
-    Blocking
+    BlockingWalk,
+    BlockingRun,
+    BlockingSprint,
 }
 
 public enum AttackIndex

@@ -48,6 +48,13 @@ public class Enemy : MonoBehaviour
                 }
             }
         }
+
+        // TODO test
+        UnityEngine.AI.NavMeshAgent agent = GetComponent<UnityEngine.AI.NavMeshAgent>();
+        if (PlayerManager.Instance != null)
+        {
+            //agent.destination = PlayerManager.Instance.transform.position;
+        }
     }
 
     void RegainPoise()
