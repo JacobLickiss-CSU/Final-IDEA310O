@@ -80,6 +80,13 @@ MonoBehaviour:
   CurrentPoise: 25
   PoiseRegen: 5
   StaggerTime: 2
+  AwarenessDistance: 10
+  AwarenessOffset: 5
+  ForgetDistance: 50
+  AwareThroughObstacles: 0
+  IsAware: 0
+  EngageDistance: 2
+  PersonalSpace: 1
 --- !u!195 &4416661130969532934
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -114,6 +121,7 @@ GameObject:
   - component: {fileID: 3650222773167190485}
   - component: {fileID: 6149488103475386556}
   - component: {fileID: 3370860036751402365}
+  - component: {fileID: 5002889871922699650}
   m_Layer: 0
   m_Name: EnemyModel
   m_TagString: Untagged
@@ -213,6 +221,29 @@ MonoBehaviour:
   m_IgnoreFromBuild: 1
   m_ApplyToChildren: 1
   m_AffectedAgents: ffffffff
+--- !u!136 &5002889871922699650
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2726828465177994592}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.5
+  m_Height: 2
+  m_Direction: 1
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &8292589286022776509
 GameObject:
   m_ObjectHideFlags: 0

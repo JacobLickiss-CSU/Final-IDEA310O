@@ -24,9 +24,29 @@ public class Enemy : MonoBehaviour
 
     private long lastHitId;
 
+    public float AwarenessDistance = 10f;
+
+    public float AwarenessOffset = 5f;
+
+    public float ForgetDistance = 50f;
+
+    private Vector3 homePosition;
+
+    public bool AwareThroughObstacles = false;
+
+    public bool IsAware = false;
+
+    public float EngageDistance = 2f;
+
+    public float PersonalSpace = 1f;
+
+    UnityEngine.AI.NavMeshAgent agent;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        homePosition = transform.position;
+        agent = GetComponent<UnityEngine.AI.NavMeshAgent>();
         State = EnemyState.Ready;
     }
 
@@ -49,12 +69,108 @@ public class Enemy : MonoBehaviour
             }
         }
 
-        // TODO test
-        UnityEngine.AI.NavMeshAgent agent = GetComponent<UnityEngine.AI.NavMeshAgent>();
+        HandleAwareness();
+        ChasePlayer();
+    }
+
+    void HandleAwareness()
+    {
         if (PlayerManager.Instance != null)
         {
-            //agent.destination = PlayerManager.Instance.transform.position;
+            Vector3 playerPos = PlayerManager.Instance.transform.position;
+
+            if(Vector3.Distance(playerPos, homePosition) > ForgetDistance)
+            {
+                IsAware = false;
+            }
+            else
+            {
+                if(CanSeePlayer(!IsAware && !AwareThroughObstacles))
+                {
+                    IsAware = true;
+                }
+                else
+                {
+                    IsAware = false;
+                }
+            }
         }
+        else
+        {
+            IsAware = false;
+        }
+    }
+
+    bool CanSeePlayer(bool needLOS = true)
+    {
+        if (PlayerManager.Instance == null) return false;
+
+        Vector3 playerPos = PlayerManager.Instance.transform.position + new Vector3(0, .5f, 0); // Looking at player core, rather than footing
+
+        if (Vector3.Distance(playerPos, transform.position + (transform.forward * AwarenessOffset)) < AwarenessDistance)
+        {
+            Vector3 start = GetFocusPosition(); // TODO check from custom head position, not focus position
+            Vector3 direction = playerPos - GetFocusPosition();
+
+            if(needLOS)
+            {
+                RaycastHit hit;
+                if (Physics.Raycast(start, direction, out hit, direction.magnitude + 1f))
+                {
+                    if (hit.collider.gameObject.tag == "Player" || hit.collider.gameObject.tag == "PlayerWeapon")
+                    {
+                        return true;
+                    }
+                }
+            }
+            else
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    void ChasePlayer()
+    {
+        if(State == EnemyState.Ready)
+        {
+            if (IsAware)
+            {
+                Vector3 playerPos = PlayerManager.Instance.transform.position;
+
+                if(Vector3.Distance(transform.position, playerPos) > EngageDistance)
+                {
+                    agent.destination = playerPos;
+                }
+                else
+                {
+                    agent.destination = transform.position;
+                    EngagePlayer();
+                }
+            }
+            else
+            {
+                agent.destination = homePosition;
+            }
+        }
+    }
+
+    void EngagePlayer()
+    {
+        Vector3 playerPos = PlayerManager.Instance.transform.position;
+
+        if (Vector3.Distance(transform.position, playerPos) < PersonalSpace)
+        {
+            Vector3 retreatDirection = transform.position - playerPos;
+            retreatDirection.Normalize();
+            retreatDirection *= PersonalSpace;
+            agent.destination = transform.position + retreatDirection;
+        }
+
+        // TODO turn to face player to prevent backstabbing (slowly)
+        // TODO engage attack behaviors
     }
 
     void RegainPoise()
