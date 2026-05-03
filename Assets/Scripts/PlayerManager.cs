@@ -199,9 +199,13 @@ public class PlayerManager : MonoBehaviour
 
     private float staggerTimer = 0f;
 
+    private Vector2 staggerFacing;
+
+    private float staggerSpeed = 1f;
+
     private Vector2 targetFacing;
 
-    private HashSet<Collider> overlappingWeapons = new HashSet<Collider>();
+    private HashSet<GameObject> overlappingWeapons = new HashSet<GameObject>();
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -667,17 +671,24 @@ public class PlayerManager : MonoBehaviour
         // TODO check iframes
         if (State != PlayerState.Dead)
         {
-            foreach(Collider collider in overlappingWeapons)
+            foreach(GameObject enemyObject in overlappingWeapons)
             {
-                Enemy enemy = collider.gameObject.GetComponent<Enemy>();
+                Enemy enemy = enemyObject.GetComponent<Enemy>();
 
                 if (enemy.IsAttackActive)
                 {
-                    if (IsBlocking)
+                    if(IsRollInvincible)
+                    {
+                        // TODO is neutralize necessary? Prevents re-attack during same animation,
+                        //  but may not have the desired effect.
+                        enemy.NeutralizeAttack();
+                    }
+                    else if (IsBlocking)
                     {
                         // TODO check if we're facing the correct direction
                         // TODO play block animation, stop movement temporarily
                         // TODO block break if we're out of stamina
+                        // TODO take reduced damage
                     }
                     else
                     {
@@ -696,7 +707,7 @@ public class PlayerManager : MonoBehaviour
     {
         if (collider.tag == "EnemyWeapon")
         {
-            overlappingWeapons.Add(collider);
+            overlappingWeapons.Add(collider.gameObject.GetComponent<EnemyWeapon>().Enemy);
         }
     }
 
@@ -704,7 +715,7 @@ public class PlayerManager : MonoBehaviour
     {
         if (collider.tag == "EnemyWeapon")
         {
-            overlappingWeapons.Remove(collider);
+            overlappingWeapons.Remove(collider.gameObject.GetComponent<EnemyWeapon>().Enemy);
         }
     }
 
@@ -716,9 +727,9 @@ public class PlayerManager : MonoBehaviour
         {
             if (DataManager.Instance.CurrentPoise <= 0)
             {
-                Stagger();
+                Stagger(attacker);
             }
-            // TODO play hit animation?
+            // TODO play hit effect
         }
     }
 
@@ -741,19 +752,30 @@ public class PlayerManager : MonoBehaviour
         // TODO game over screen
     }
 
-    void Stagger()
+    void Stagger(Enemy attacker)
     {
         State = PlayerState.Stagger;
+        SetStaggerDirection(attacker);
         staggerTimer = 0;
-        // TODO instant face source of damage?
         modelAnimator.CrossFade(Animator.StringToHash("RobogirlArmature|Hit"), 0.2f);
-        // TODO move backwards during animation in HandleStaggering
+    }
+
+    void SetStaggerDirection(Enemy attacker)
+    {
+        FacePosition(attacker.GetFocusPosition());
+        staggerFacing = targetFacing;
     }
 
     void HandleStaggering()
     {
         if (State == PlayerState.Stagger)
         {
+            // Move away from the stagger point
+            Vector3 finalMove = new Vector3(-targetFacing.x, 0, -targetFacing.y) * staggerSpeed;
+            finalMove.y += gravityValue;
+            GetComponent<CharacterController>().Move(finalMove * Time.deltaTime);
+
+            // Continue stagger
             staggerTimer += Time.deltaTime;
             if (staggerTimer >= StaggerTime)
             {

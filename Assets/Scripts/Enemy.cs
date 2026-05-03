@@ -132,7 +132,7 @@ public class Enemy : MonoBehaviour
 
     void HandleAwareness()
     {
-        if (PlayerManager.Instance != null)
+        if (PlayerManager.Instance != null && PlayerManager.Instance.State != PlayerState.Dead)
         {
             Vector3 playerPos = PlayerManager.Instance.transform.position;
 
