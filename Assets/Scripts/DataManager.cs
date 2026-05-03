@@ -12,6 +12,8 @@ public class DataManager : MonoBehaviour
 
     public int CurrentStamina = 60;
 
+    public float StaminaRegen = 10f;
+
     public float MaxPoise = 30f;
 
     public float CurrentPoise = 30f;

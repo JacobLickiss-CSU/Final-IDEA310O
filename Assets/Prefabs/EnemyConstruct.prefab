@@ -229,7 +229,7 @@ MonoBehaviour:
   PersonalSpace: 1
   EngageTurnSpeed: 180
   gravityValue: -9.81
-  MaxAttackAngle: 10
+  MaxAttackAngle: 4
   AttackDamage: 15
   attackTime: 4
   attackActiveStart: 1.041667

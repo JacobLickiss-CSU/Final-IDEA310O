@@ -43,6 +43,8 @@ public class PlayerManager : MonoBehaviour
 
     public float sprintHold = .75f;
 
+    public float SprintStaminaDrain = 4f;
+
     public PlayerState State { get; private set; } = PlayerState.Ready;
 
     private float sprintTime = 0f;
@@ -53,6 +55,8 @@ public class PlayerManager : MonoBehaviour
     }
 
     public float rollSpeed = 7f;
+
+    public int RollStaminaCost = 20;
 
     public float rollTime = 1.0f;
 
@@ -97,9 +101,13 @@ public class PlayerManager : MonoBehaviour
 
     private AttackIndex attackIndex;
 
-    public int attackLightDamage = 15;
+    public int AttackLightDamage = 15;
 
-    public int attackHeavyDamage = 35;
+    public int AttackLightStamina = 15;
+
+    public int AttackHeavyDamage = 35;
+
+    public int AttackHeavyStamina = 25;
 
     private float attackTimer = 0f;
     public bool IsAttackActive
@@ -195,6 +203,12 @@ public class PlayerManager : MonoBehaviour
         }
     }
 
+    float blockingAttackTimer = 0f;
+
+    public float BlockingAttackTime = 1f;
+
+    public float BlockAngle = 45f;
+
     public float StaggerTime = 2f;
 
     private float staggerTimer = 0f;
@@ -202,6 +216,12 @@ public class PlayerManager : MonoBehaviour
     private Vector2 staggerFacing;
 
     private float staggerSpeed = 1f;
+
+    private float staminaRegenPause = 0f;
+
+    private float staminaRegenPartial = 0f;
+
+    public float StaminaEmptyPenaltyTime = 1f;
 
     private Vector2 targetFacing;
 
@@ -242,6 +262,8 @@ public class PlayerManager : MonoBehaviour
         HandleStaggering();
         RegainPoise();
         CheckHit();
+        ContinueBlockingAttack();
+        RegenStamina();
 
         if (State == PlayerState.Rolling)
         {
@@ -257,12 +279,15 @@ public class PlayerManager : MonoBehaviour
             {
                 if (sprintAction.triggered && sprintAction.IsPressed())
                 {
-                    StartRoll();
+                    if(HasStamina(RollStaminaCost))
+                    {
+                        StartRoll();
+                    }
                 }
             }
             else
             {
-                if (sprintAction.IsPressed())
+                if (sprintAction.IsPressed() && HasStamina(1))
                 {
                     sprintTime += Time.deltaTime;
                 }
@@ -270,7 +295,10 @@ public class PlayerManager : MonoBehaviour
                 {
                     if (sprintTime > 0 && sprintTime < sprintHold)
                     {
-                        StartRoll();
+                        if (HasStamina(RollStaminaCost))
+                        {
+                            StartRoll();
+                        }
                     }
                     sprintTime = 0;
                 }
@@ -456,6 +484,8 @@ public class PlayerManager : MonoBehaviour
             StopAttacking();
         }
 
+        ConsumeStamina(RollStaminaCost);
+
         State = PlayerState.Rolling;
         LookTowardsFacing(true, true);
         modelAnimator.speed = 1.5f;
@@ -531,12 +561,12 @@ public class PlayerManager : MonoBehaviour
     {
         if (CanMove())
         {
-            if (attackLightAction.IsPressed())
+            if (attackLightAction.IsPressed() && HasStamina(AttackLightStamina))
             {
                 StartAttacking(PlayerState.AttackingLight);
                 return;
             }
-            else if (attackHeavyAction.IsPressed())
+            else if (attackHeavyAction.IsPressed() && HasStamina(AttackHeavyStamina))
             {
                 StartAttacking(PlayerState.AttackingHeavy);
                 return;
@@ -549,6 +579,12 @@ public class PlayerManager : MonoBehaviour
         if(attackType != PlayerState.AttackingLight && attackType != PlayerState.AttackingHeavy)
         {
             return;
+        }
+
+        switch(attackType)
+        {
+            case PlayerState.AttackingLight: ConsumeStamina(AttackLightStamina); break;
+            case PlayerState.AttackingHeavy: ConsumeStamina(AttackHeavyStamina); break;
         }
 
         SetAttackId();
@@ -582,12 +618,12 @@ public class PlayerManager : MonoBehaviour
     {
         if(attackType == PlayerState.AttackingLight)
         {
-            AttackDamage = attackLightDamage;
+            AttackDamage = AttackLightDamage;
         }
 
         if (attackType == PlayerState.AttackingHeavy)
         {
-            AttackDamage = attackHeavyDamage;
+            AttackDamage = AttackHeavyDamage;
         }
     }
 
@@ -656,7 +692,7 @@ public class PlayerManager : MonoBehaviour
 
     void HandleBlocking()
     {
-        if (blockAction.IsPressed() && State == PlayerState.Ready)
+        if (blockAction.IsPressed() && State == PlayerState.Ready && DataManager.Instance.CurrentStamina > 0)
         {
             isBlocking = true;
         }
@@ -668,7 +704,6 @@ public class PlayerManager : MonoBehaviour
 
     void CheckHit()
     {
-        // TODO check iframes
         if (State != PlayerState.Dead)
         {
             foreach(GameObject enemyObject in overlappingWeapons)
@@ -685,22 +720,72 @@ public class PlayerManager : MonoBehaviour
                     }
                     else if (IsBlocking)
                     {
-                        // TODO check if we're facing the correct direction
-                        // TODO play block animation, stop movement temporarily
-                        // TODO block break if we're out of stamina
-                        // TODO take reduced damage
+                        if(WithinBlockAngle(enemyObject))
+                        {
+                            if(ConsumeStamina(enemy.AttackDamage))
+                            {
+                                TakeDamage(enemy.AttackDamage / 2);
+                                if(State != PlayerState.Dead)
+                                {
+                                    StartBlockingAttack(enemy);
+                                }
+                            }
+                            else
+                            {
+                                // TODO - special block break animation/effects?
+                                GetHit(enemy, true);
+                            }
+                        }
+                        else
+                        {
+                            GetHit(enemy);
+                        }
                     }
                     else
                     {
                         GetHit(enemy);
-                        enemy.NeutralizeAttack();
                     }
                 }
             }
-
-            //CapsuleGeometry playerGeometry = GetComponent<CharacterController>().GetGeometry<CapsuleGeometry>();
-            //Collider[] touching = Physics.OverlapCapsule(playerGeometry.center1, playerGeometry.center2, playerGeometry.radius, null, true);
         }
+    }
+
+    bool WithinBlockAngle(GameObject enemyObject)
+    {
+        Vector3 enemyDirection = enemyObject.transform.position - transform.position;
+        Vector2 enemyFlatDirection = new Vector2(enemyDirection.x, enemyDirection.z);
+        enemyFlatDirection.Normalize();
+        float angle = Vector3.Angle(targetFacing, enemyFlatDirection);
+
+        return angle <= BlockAngle;
+    }
+
+    void StartBlockingAttack(Enemy enemy)
+    {
+        State = PlayerState.BlockingAttack;
+        enemy.NeutralizeAttack();
+        blockingAttackTimer = 0f;
+        modelAnimator.Play(Animator.StringToHash("RobogirlArmature|BlockHit"));
+    }
+
+    void ContinueBlockingAttack()
+    {
+        if(State == PlayerState.BlockingAttack)
+        {
+            blockingAttackTimer += Time.deltaTime;
+
+            if (blockingAttackTimer >= BlockingAttackTime)
+            {
+                FinishBlockingAttack();
+            }
+        }
+    }
+
+    void FinishBlockingAttack(PlayerState endState = PlayerState.Ready)
+    {
+        State = endState;
+        blockingAttackTimer = 0f;
+        modelAnimator.CrossFade(Animator.StringToHash("RobogirlArmature|Block"), 0.2f);
     }
 
     void OnTriggerEnter(Collider collider)
@@ -719,13 +804,14 @@ public class PlayerManager : MonoBehaviour
         }
     }
 
-    void GetHit(Enemy attacker)
+    void GetHit(Enemy attacker, bool forceStagger = false)
     {
         TakeDamage(attacker.AttackDamage);
+        attacker.NeutralizeAttack();
 
         if (State != PlayerState.Dead)
         {
-            if (DataManager.Instance.CurrentPoise <= 0)
+            if (DataManager.Instance.CurrentPoise <= 0 || forceStagger)
             {
                 Stagger(attacker);
             }
@@ -743,6 +829,28 @@ public class PlayerManager : MonoBehaviour
             DataManager.Instance.CurrentHealth = 0;
             Die();
         }
+    }
+
+    bool ConsumeStamina(int amount)
+    {
+        bool enough = HasStamina(amount);
+        DataManager.Instance.CurrentStamina -= amount;
+        if(DataManager.Instance.CurrentStamina < 0)
+        {
+            DataManager.Instance.CurrentStamina = 0;
+        }
+
+        if(!enough)
+        {
+            staminaRegenPause = StaminaEmptyPenaltyTime;
+        }
+
+        return enough;
+    }
+
+    bool HasStamina(int amount)
+    {
+        return DataManager.Instance.CurrentStamina >= amount;
     }
 
     void Die()
@@ -794,6 +902,49 @@ public class PlayerManager : MonoBehaviour
             DataManager.Instance.CurrentPoise = DataManager.Instance.MaxPoise;
         }
     }
+
+    void RegenStamina()
+    {
+        if(staminaRegenPause > 0)
+        {
+            staminaRegenPartial = 0f;
+            staminaRegenPause -= Time.deltaTime;
+            return;
+        }
+
+        // Partial regen for fractional regains between frames
+        if(!IsSprinting)
+        {
+            staminaRegenPartial += DataManager.Instance.StaminaRegen * Time.deltaTime;
+        }
+        else
+        {
+            staminaRegenPartial -= SprintStaminaDrain * Time.deltaTime;
+        }
+
+        // Take the fractional regain/loss and apply it when possible
+        while (staminaRegenPartial > 1)
+        {
+            DataManager.Instance.CurrentStamina += 1;
+            staminaRegenPartial -= 1f;
+        }
+        while (staminaRegenPartial < -1)
+        {
+            DataManager.Instance.CurrentStamina -= 1;
+            staminaRegenPartial += 1f;
+
+            if(DataManager.Instance.CurrentStamina <= 0)
+            {
+                DataManager.Instance.CurrentStamina = 0;
+                staminaRegenPause = StaminaEmptyPenaltyTime;
+            }
+        }
+
+        if (DataManager.Instance.CurrentStamina > DataManager.Instance.MaxStamina)
+        {
+            DataManager.Instance.CurrentStamina = DataManager.Instance.MaxStamina;
+        }
+    }
 }
 
 public enum PlayerState
@@ -803,6 +954,7 @@ public enum PlayerState
     AttackingHeavy,
     Stagger,
     Rolling,
+    BlockingAttack,
     Falling,
     Dead,
     Frozen
