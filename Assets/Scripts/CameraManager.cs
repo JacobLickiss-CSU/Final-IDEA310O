@@ -112,7 +112,7 @@ public class CameraManager : MonoBehaviour
         RaycastHit hit;
         if (Physics.Raycast(CameraPivot.transform.position, cameraDirection, out hit, cameraDirection.magnitude))
         {
-            if (hit.collider.gameObject.tag != "Player" && hit.collider.gameObject.tag != "Enemy" && hit.collider.gameObject.tag != "PlayerWeapon")
+            if (hit.collider.gameObject.tag != "Player" && hit.collider.gameObject.tag != "Enemy" && hit.collider.gameObject.tag != "PlayerWeapon" && hit.collider.gameObject.tag != "InvisibleWall")
             {
                 transform.position = hit.point;
             }
