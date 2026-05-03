@@ -4,13 +4,23 @@ public class Enemy : MonoBehaviour
 {
     public GameObject TargetFocus = null;
 
+    public Animator modelAnimator;
+
+    public string IdleAnimationName = "|Idle";
+
+    public string AttackAnimationName = "|Attack";
+
+    public string HitAnimationName = "|Hit";
+
+    public string DieAnimationName = "|Die";
+
     public int MaxHealth = 50;
 
     public int CurrentHealth = 50;
 
-    public float MaxPoise = 25f;
+    public float MaxPoise = 10f;
 
-    public float CurrentPoise = 25f;
+    public float CurrentPoise = 10f;
 
     public float PoiseRegen = 5f;
 
@@ -42,12 +52,58 @@ public class Enemy : MonoBehaviour
 
     UnityEngine.AI.NavMeshAgent agent;
 
+    public float EngageTurnSpeed = 180f;
+
+    public float gravityValue = -9.81f;
+
+    public float MaxAttackAngle = 10f;
+
+    public int AttackDamage = 15;
+
+    private float attackTimer = 0f;
+    private bool attackNeutralized = false;
+    public bool IsAttackActive
+    {
+        get
+        {
+            return State == EnemyState.Attacking &&
+                attackTimer >= attackActiveStart && attackTimer <= attackActiveEnd && !attackNeutralized;
+        }
+    }
+
+    public bool IsAttackMoving
+    {
+        get
+        {
+            return State == EnemyState.Attacking &&
+                attackTimer >= attackMoveStart && attackTimer <= attackMoveEnd;
+        }
+    }
+
+    public float attackTime = 4f;
+
+    public float attackActiveStart = 49f / 24f;
+
+    public float attackActiveEnd = 62f / 24f;
+
+    public float attackMoveSpeed = 2f;
+
+    public float attackMoveStart = 49f / 24f;
+
+    public float attackMoveEnd = 59f / 24f;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         homePosition = transform.position;
         agent = GetComponent<UnityEngine.AI.NavMeshAgent>();
         State = EnemyState.Ready;
+
+    }
+
+    void PrepareAnimationStates()
+    {
+
     }
 
     // Update is called once per frame
@@ -71,6 +127,7 @@ public class Enemy : MonoBehaviour
 
         HandleAwareness();
         ChasePlayer();
+        ContinueAttacking();
     }
 
     void HandleAwareness()
@@ -169,8 +226,38 @@ public class Enemy : MonoBehaviour
             agent.destination = transform.position + retreatDirection;
         }
 
-        // TODO turn to face player to prevent backstabbing (slowly)
-        // TODO engage attack behaviors
+        // Turn to face player (slowly)
+        LookTowardsPlayer();
+
+        // Engage attack behaviors
+        ConsiderAttack();
+    }
+
+    void LookTowardsPlayer()
+    {
+        Quaternion currentFacing = transform.rotation;
+        transform.LookAt(PlayerManager.Instance.transform);
+        Quaternion targetFacing = transform.rotation;
+        transform.rotation = Quaternion.RotateTowards(currentFacing, targetFacing, Time.deltaTime * EngageTurnSpeed);
+        transform.eulerAngles = new Vector3(0, transform.eulerAngles.y, 0);
+    }
+
+    void ConsiderAttack()
+    {
+        if(PlayerAngle() <= MaxAttackAngle)
+        {
+            StartAttack();
+        }
+    }
+
+    float PlayerAngle()
+    {
+        Vector3 playerDirection = PlayerManager.Instance.transform.position - transform.position;
+        Vector2 playerFlatDirection = new Vector2(playerDirection.x, playerDirection.z);
+        playerFlatDirection.Normalize();
+        Vector2 forwardDirection = new Vector2(transform.forward.x, transform.forward.z);
+
+        return Vector3.Angle(forwardDirection, playerFlatDirection);
     }
 
     void RegainPoise()
@@ -229,7 +316,6 @@ public class Enemy : MonoBehaviour
             {
                 Stagger();
             }
-            // TODO play hit animation
         }
     }
 
@@ -248,14 +334,20 @@ public class Enemy : MonoBehaviour
     void Die()
     {
         State = EnemyState.Dead;
-        // TODO play die animation
+        CrossFadeIfExists(DieAnimationName, 0.2f);
     }
 
     void Stagger()
     {
+        if(State == EnemyState.Attacking)
+        {
+            StaggerAttack();
+        }
+
         State = EnemyState.Stagger;
         staggerTimer = 0;
-        // TODO play stagger animation
+        agent.isStopped = true;
+        CrossFadeIfExists(HitAnimationName, 0.2f);
     }
 
     void HandleStaggering()
@@ -266,7 +358,73 @@ public class Enemy : MonoBehaviour
             if (staggerTimer >= StaggerTime)
             {
                 State = EnemyState.Ready;
+                CurrentPoise = MaxPoise;
+                agent.isStopped = false;
             }
+        }
+    }
+
+    void StartAttack()
+    {
+        State = EnemyState.Attacking;
+        attackNeutralized = false;
+        attackTimer = 0f;
+        agent.isStopped = true;
+        CrossFadeIfExists(AttackAnimationName, 0.2f);
+    }
+
+    void ContinueAttacking()
+    {
+        if(State == EnemyState.Attacking)
+        {
+            attackTimer += Time.deltaTime;
+
+            if (attackTimer >= attackTime)
+            {
+                StopAttacking();
+            }
+            else
+            {
+                if (IsAttackMoving)
+                {
+                    Vector3 finalMove = transform.forward * attackMoveSpeed;
+                    finalMove.y += gravityValue;
+                    GetComponent<CharacterController>().Move(finalMove * Time.deltaTime);
+                }
+            }
+        }
+    }
+
+    void StaggerAttack()
+    {
+        attackTimer = 0;
+        agent.isStopped = false;
+    }
+
+    void StopAttacking(EnemyState endState = EnemyState.Ready)
+    {
+        attackTimer = 0;
+        State = endState;
+        agent.isStopped = false;
+        CrossFadeIfExists(IdleAnimationName, 0.2f);
+    }
+
+    public void NeutralizeAttack()
+    {
+        // Keep using the attack animation, but make IsAttackActive false to prevent repeated hits
+        attackNeutralized = true;
+    }
+
+    void CrossFadeIfExists(string animationName, float normalizedTransitionDuration)
+    {
+        int targetState = Animator.StringToHash(animationName);
+        if(modelAnimator.HasState(0, targetState))
+        {
+            modelAnimator.Play(targetState, 0, normalizedTransitionDuration);
+        }
+        else
+        {
+            Debug.Log("Cannot play animation " + animationName);
         }
     }
 }
@@ -275,5 +433,6 @@ public enum EnemyState
 {
     Ready,
     Stagger,
+    Attacking,
     Dead
 }

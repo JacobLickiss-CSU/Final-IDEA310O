@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using System;
+using System.Collections.Generic;
 
 public class PlayerManager : MonoBehaviour
 {
@@ -13,6 +14,8 @@ public class PlayerManager : MonoBehaviour
     private InputAction moveAction;
 
     private InputAction sprintAction;
+
+    private InputAction walkAction;
 
     private InputAction attackLightAction;
 
@@ -192,7 +195,13 @@ public class PlayerManager : MonoBehaviour
         }
     }
 
+    public float StaggerTime = 2f;
+
+    private float staggerTimer = 0f;
+
     private Vector2 targetFacing;
+
+    private HashSet<Collider> overlappingWeapons = new HashSet<Collider>();
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -212,6 +221,7 @@ public class PlayerManager : MonoBehaviour
     {
         moveAction = InputSystem.actions.FindAction("Move");
         sprintAction = InputSystem.actions.FindAction("Sprint");
+        walkAction = InputSystem.actions.FindAction("Walk");
         attackLightAction = InputSystem.actions.FindAction("AttackLight");
         attackHeavyAction = InputSystem.actions.FindAction("AttackHeavy");
         blockAction = InputSystem.actions.FindAction("Block");
@@ -225,8 +235,11 @@ public class PlayerManager : MonoBehaviour
         HandleMovement();
         LookTowardsFacing();
         HandleBlocking();
+        HandleStaggering();
+        RegainPoise();
+        CheckHit();
 
-        if(State == PlayerState.Rolling)
+        if (State == PlayerState.Rolling)
         {
             ContinueRoll();
         }
@@ -236,17 +249,27 @@ public class PlayerManager : MonoBehaviour
     {
         if(State == PlayerState.Ready || IsAttackHolding)
         {
-            if (sprintAction.IsPressed())
+            if(Camera.IsTargetLocked)
             {
-                sprintTime += Time.deltaTime;
-            }
-            else
-            {
-                if (sprintTime > 0 && sprintTime < sprintHold)
+                if (sprintAction.triggered && sprintAction.IsPressed())
                 {
                     StartRoll();
                 }
-                sprintTime = 0;
+            }
+            else
+            {
+                if (sprintAction.IsPressed())
+                {
+                    sprintTime += Time.deltaTime;
+                }
+                else
+                {
+                    if (sprintTime > 0 && sprintTime < sprintHold)
+                    {
+                        StartRoll();
+                    }
+                    sprintTime = 0;
+                }
             }
         }
         else
@@ -280,6 +303,8 @@ public class PlayerManager : MonoBehaviour
     {
         if (IsAttackHolding) return;
 
+        Vector3 finalMove = new Vector3(0,0,0);
+
         Vector2 moveValue = moveAction.ReadValue<Vector2>();
         if (moveValue.magnitude > 0 && CanMove())
         {
@@ -289,6 +314,10 @@ public class PlayerManager : MonoBehaviour
             }
 
             MovementMode mode = MovementMode.Run;
+            if(walkAction.IsPressed())
+            {
+                mode = MovementMode.Walk;
+            }
             if(moveValue.magnitude < walkThreshhold)
             {
                 if(walkTimer >= walkTimeThreshhold)
@@ -358,12 +387,7 @@ public class PlayerManager : MonoBehaviour
                 default: { speed = walkSpeed; break; }
             }
 
-            Vector3 finalMove = new Vector3(tempFacing.magnitude > 0 ? tempFacing.x : targetFacing.x, 0, tempFacing.magnitude > 0 ? tempFacing.y : targetFacing.y) * speed;
-
-            // TODO fall even when not moving
-            finalMove.y += gravityValue;
-
-            GetComponent<CharacterController>().Move(finalMove * Time.deltaTime);
+            finalMove = new Vector3(tempFacing.magnitude > 0 ? tempFacing.x : targetFacing.x, 0, tempFacing.magnitude > 0 ? tempFacing.y : targetFacing.y) * speed;
         }
         else if(State == PlayerState.Ready)
         {
@@ -380,6 +404,10 @@ public class PlayerManager : MonoBehaviour
                 }
             }
         }
+
+        // Add gravity and move
+        finalMove.y += gravityValue;
+        GetComponent<CharacterController>().Move(finalMove * Time.deltaTime);
     }
 
     void UpdateTargetFacing()
@@ -633,6 +661,117 @@ public class PlayerManager : MonoBehaviour
             isBlocking = false;
         }
     }
+
+    void CheckHit()
+    {
+        // TODO check iframes
+        if (State != PlayerState.Dead)
+        {
+            foreach(Collider collider in overlappingWeapons)
+            {
+                Enemy enemy = collider.gameObject.GetComponent<Enemy>();
+
+                if (enemy.IsAttackActive)
+                {
+                    if (IsBlocking)
+                    {
+                        // TODO check if we're facing the correct direction
+                        // TODO play block animation, stop movement temporarily
+                        // TODO block break if we're out of stamina
+                    }
+                    else
+                    {
+                        GetHit(enemy);
+                        enemy.NeutralizeAttack();
+                    }
+                }
+            }
+
+            //CapsuleGeometry playerGeometry = GetComponent<CharacterController>().GetGeometry<CapsuleGeometry>();
+            //Collider[] touching = Physics.OverlapCapsule(playerGeometry.center1, playerGeometry.center2, playerGeometry.radius, null, true);
+        }
+    }
+
+    void OnTriggerEnter(Collider collider)
+    {
+        if (collider.tag == "EnemyWeapon")
+        {
+            overlappingWeapons.Add(collider);
+        }
+    }
+
+    void OnTriggerExit(Collider collider)
+    {
+        if (collider.tag == "EnemyWeapon")
+        {
+            overlappingWeapons.Remove(collider);
+        }
+    }
+
+    void GetHit(Enemy attacker)
+    {
+        TakeDamage(attacker.AttackDamage);
+
+        if (State != PlayerState.Dead)
+        {
+            if (DataManager.Instance.CurrentPoise <= 0)
+            {
+                Stagger();
+            }
+            // TODO play hit animation?
+        }
+    }
+
+    void TakeDamage(int damage)
+    {
+        DataManager.Instance.CurrentHealth -= damage;
+        DataManager.Instance.CurrentPoise -= damage;
+
+        if (DataManager.Instance.CurrentHealth <= 0)
+        {
+            DataManager.Instance.CurrentHealth = 0;
+            Die();
+        }
+    }
+
+    void Die()
+    {
+        State = PlayerState.Dead;
+        modelAnimator.CrossFade(Animator.StringToHash("RobogirlArmature|Die"), 0.2f);
+        // TODO game over screen
+    }
+
+    void Stagger()
+    {
+        State = PlayerState.Stagger;
+        staggerTimer = 0;
+        // TODO instant face source of damage?
+        modelAnimator.CrossFade(Animator.StringToHash("RobogirlArmature|Hit"), 0.2f);
+        // TODO move backwards during animation in HandleStaggering
+    }
+
+    void HandleStaggering()
+    {
+        if (State == PlayerState.Stagger)
+        {
+            staggerTimer += Time.deltaTime;
+            if (staggerTimer >= StaggerTime)
+            {
+                State = PlayerState.Ready;
+                DataManager.Instance.CurrentPoise = DataManager.Instance.MaxPoise;
+            }
+        }
+    }
+
+    void RegainPoise()
+    {
+        DataManager.Instance.CurrentPoise += DataManager.Instance.PoiseRegen * Time.deltaTime;
+
+        if (DataManager.Instance.CurrentPoise > DataManager.Instance.MaxPoise)
+        {
+            DataManager.Instance.CurrentPoise = DataManager.Instance.MaxPoise;
+        }
+    }
 }
 
 public enum PlayerState
@@ -640,7 +779,7 @@ public enum PlayerState
     Ready,
     AttackingLight,
     AttackingHeavy,
-    Hit,
+    Stagger,
     Rolling,
     Falling,
     Dead,

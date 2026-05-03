@@ -245,7 +245,7 @@ public class CameraManager : MonoBehaviour
         foreach (Collider possibleTarget in possibleTargets)
         {
             GameObject targetGameObject = possibleTarget.gameObject;
-            if (targetGameObject.tag == "Enemy")
+            if (targetGameObject.tag == "Enemy" && targetGameObject.GetComponent<Enemy>().State != EnemyState.Dead)
             {
                 if (targetGameObject == LockTarget) continue;
 
