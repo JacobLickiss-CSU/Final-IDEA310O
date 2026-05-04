@@ -4,6 +4,8 @@ using System;
 
 public class CameraManager : MonoBehaviour
 {
+    public LockOn LockEffect;
+
     public float LookSensitivity = 0.6f;
 
     public float MinAngle = -80f;
@@ -70,6 +72,7 @@ public class CameraManager : MonoBehaviour
         CheckSwitchLock();
         CheckLock();
         UseLock();
+        UpdateLockEffect();
     }
 
     bool CanLook()
@@ -306,6 +309,21 @@ public class CameraManager : MonoBehaviour
 
             //CameraFocus.transform.LookAt(targetTransform);
             //CameraFocus.transform.localEulerAngles = new Vector3(0, CameraFocus.transform.localEulerAngles.y, 0);
+        }
+    }
+
+    void UpdateLockEffect()
+    {
+        if (IsTargetLocked)
+        {
+            LockEffect?.Show();
+
+            Vector3 targetPosition = LockTarget.GetComponent<Enemy>().GetFocusPosition();
+            LockEffect?.SetPosition(targetPosition);
+        }
+        else
+        {
+            LockEffect?.Hide();
         }
     }
 }
