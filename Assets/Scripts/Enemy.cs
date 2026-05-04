@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class Enemy : MonoBehaviour
+public class Enemy : MonoBehaviour, IReset
 {
     public GameObject TargetFocus = null;
 
@@ -92,18 +92,41 @@ public class Enemy : MonoBehaviour
 
     public float attackMoveEnd = 59f / 24f;
 
+    private Vector3 resetPosition;
+
+    private Quaternion resetRotation;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         homePosition = transform.position;
         agent = GetComponent<UnityEngine.AI.NavMeshAgent>();
         State = EnemyState.Ready;
-
+        resetPosition = transform.position;
+        resetRotation = transform.rotation;
+        DataManager.Instance.RegisterReset(this);
     }
 
     void PrepareAnimationStates()
     {
 
+    }
+
+    public void DoReset()
+    {
+        State = EnemyState.Ready;
+        transform.position = resetPosition;
+        transform.rotation = resetRotation;
+        agent.destination = homePosition;
+        agent.isStopped = false;
+        CurrentHealth = MaxHealth;
+        CurrentPoise = MaxPoise;
+        IsAware = false;
+        modelAnimator.Play(Animator.StringToHash(IdleAnimationName));
+        staggerTimer = 0f;
+        weaponTouching = false;
+        attackTimer = 0f;
+        attackNeutralized = false;
     }
 
     // Update is called once per frame

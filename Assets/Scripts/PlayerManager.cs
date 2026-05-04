@@ -23,6 +23,8 @@ public class PlayerManager : MonoBehaviour
 
     private InputAction blockAction;
 
+    private InputAction healAction;
+
     public Animator modelAnimator;
 
     public float gravityValue = -9.81f;
@@ -223,6 +225,8 @@ public class PlayerManager : MonoBehaviour
 
     public float StaminaEmptyPenaltyTime = 1f;
 
+    private RestPoint restAttemptPoint = null;
+
     private Vector2 targetFacing;
 
     private HashSet<GameObject> overlappingWeapons = new HashSet<GameObject>();
@@ -249,6 +253,7 @@ public class PlayerManager : MonoBehaviour
         attackLightAction = InputSystem.actions.FindAction("AttackLight");
         attackHeavyAction = InputSystem.actions.FindAction("AttackHeavy");
         blockAction = InputSystem.actions.FindAction("Block");
+        healAction = InputSystem.actions.FindAction("Heal");
     }
 
     // Update is called once per frame
@@ -264,6 +269,7 @@ public class PlayerManager : MonoBehaviour
         CheckHit();
         ContinueBlockingAttack();
         RegenStamina();
+        HandleHealing();
 
         if (State == PlayerState.Rolling)
         {
@@ -806,6 +812,11 @@ public class PlayerManager : MonoBehaviour
 
     void GetHit(Enemy attacker, bool forceStagger = false)
     {
+        if(State == PlayerState.Resting)
+        {
+            forceStagger = true;
+        }
+
         TakeDamage(attacker.AttackDamage);
         attacker.NeutralizeAttack();
 
@@ -855,6 +866,8 @@ public class PlayerManager : MonoBehaviour
 
     void Die()
     {
+        InterruptHealing(PlayerState.Dead);
+        InterruptResting(PlayerState.Dead);
         State = PlayerState.Dead;
         modelAnimator.CrossFade(Animator.StringToHash("RobogirlArmature|Die"), 0.2f);
         // TODO game over screen
@@ -862,6 +875,8 @@ public class PlayerManager : MonoBehaviour
 
     void Stagger(Enemy attacker)
     {
+        InterruptHealing(PlayerState.Stagger);
+        InterruptResting(PlayerState.Stagger);
         State = PlayerState.Stagger;
         SetStaggerDirection(attacker);
         staggerTimer = 0;
@@ -945,6 +960,108 @@ public class PlayerManager : MonoBehaviour
             DataManager.Instance.CurrentStamina = DataManager.Instance.MaxStamina;
         }
     }
+
+    void HandleHealing()
+    {
+        // Healing uses the animation event system to drive actions, rather than
+        //   timers like the other systems currently use.
+        // TODO refactor other essential systems to use animation events for more
+        //   accurate timing.
+        CheckHealing();
+    }
+
+    void CheckHealing()
+    {
+        if (State == PlayerState.Ready)
+        {
+            if (healAction.triggered && healAction.IsPressed())
+            {
+                if(DataManager.Instance.CurrentHeals > 0)
+                {
+                    StartHealing();
+                }
+            }
+        }
+    }
+
+    void StartHealing()
+    {
+        State = PlayerState.Healing;
+        modelAnimator.CrossFade(Animator.StringToHash("RobogirlArmature|Heal"), 0.2f);
+    }
+
+
+    public void EventHeal()
+    {
+        if (State == PlayerState.Healing)
+        {
+            DataManager.Instance.CurrentHeals -= 1;
+            DataManager.Instance.CurrentHealth += DataManager.Instance.HealAmount; // TODO gradual health changes
+
+            if (DataManager.Instance.CurrentHealth > DataManager.Instance.MaxHealth)
+            {
+                DataManager.Instance.CurrentHealth = DataManager.Instance.MaxHealth;
+            }
+        }
+    }
+
+    public void EventFinishHealing()
+    {
+        State = PlayerState.Ready;
+        modelAnimator.CrossFade(Animator.StringToHash("RobogirlArmature|Idle"), 0.2f);
+    }
+
+    void InterruptHealing(PlayerState resultState = PlayerState.Ready)
+    {
+        State = resultState;
+    }
+
+    public void StartRest(RestPoint point)
+    {
+        State = PlayerState.Resting;
+        restAttemptPoint = point;
+        PlayRestEffects(point);
+        PlayRestAnimation(point);
+        FacePosition(point.gameObject.transform.position);
+    }
+
+    public void EventFinishResting()
+    {
+        State = PlayerState.Ready;
+        restAttemptPoint?.PlayDisable();
+    }
+
+    public void EventStartReseting()
+    {
+        ResetWorld();
+        SetRespawn(restAttemptPoint);
+    }
+
+    void InterruptResting(PlayerState resultState = PlayerState.Ready)
+    {
+        State = resultState;
+        restAttemptPoint?.PlayDisable();
+    }
+
+    void PlayRestEffects(RestPoint point)
+    {
+        point.PlayEnable();
+    }
+
+    void PlayRestAnimation(RestPoint point)
+    {
+        modelAnimator.CrossFade(Animator.StringToHash("RobogirlArmature|Rest"), 0.2f);
+    }
+
+    void ResetWorld()
+    {
+        DataManager.Instance.ResetWorld();
+    }
+
+    void SetRespawn(RestPoint point)
+    {
+        DataManager.Instance.SetRespawn(point);
+    }
 }
 
 public enum PlayerState
@@ -955,6 +1072,8 @@ public enum PlayerState
     Stagger,
     Rolling,
     BlockingAttack,
+    Healing,
+    Resting,
     Falling,
     Dead,
     Frozen

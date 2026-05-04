@@ -317,7 +317,9 @@ MonoBehaviour:
   walkTimeThreshhold: 0.25
   walkTimer: 0
   sprintHold: 0.75
+  SprintStaminaDrain: 4
   rollSpeed: 7
+  RollStaminaCost: 20
   rollTime: 1
   rollIStart: 0.25
   rollIEnd: 0.85
@@ -335,9 +337,14 @@ MonoBehaviour:
   attackHeavyMoveSpeed: 4
   attackHeavyMoveStart: 0.5833333
   attackHeavyMoveEnd: 0.7916667
-  attackLightDamage: 15
-  attackHeavyDamage: 35
+  AttackLightDamage: 15
+  AttackLightStamina: 15
+  AttackHeavyDamage: 35
+  AttackHeavyStamina: 25
+  BlockingAttackTime: 1
+  BlockAngle: 45
   StaggerTime: 1
+  StaminaEmptyPenaltyTime: 1
 --- !u!143 &7856368613324904279
 CharacterController:
   m_ObjectHideFlags: 0
@@ -679,6 +686,9 @@ PrefabInstance:
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: f0779076f964e594684dfc794389bbfc, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3418800790113091225}
     - targetCorrespondingSourceObject: {fileID: 2811019231947979235, guid: f0779076f964e594684dfc794389bbfc, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2594710434888564400}
@@ -719,6 +729,18 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: f0779076f964e594684dfc794389bbfc, type: 3}
   m_PrefabInstance: {fileID: 9149817710527215965}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &3418800790113091225
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8231392007390512140}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b8bd289c77bbfd649b733d5db4f71f0f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerAnimationEvents
 --- !u!4 &8750520222218198710 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: f0779076f964e594684dfc794389bbfc, type: 3}

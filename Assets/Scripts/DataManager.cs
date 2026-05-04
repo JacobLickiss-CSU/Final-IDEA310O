@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 public class DataManager : MonoBehaviour
 {
@@ -20,6 +21,16 @@ public class DataManager : MonoBehaviour
 
     public float PoiseRegen = 5f;
 
+    public int MaxHeals = 3;
+
+    public int CurrentHeals = 3;
+
+    public int HealAmount = 50;
+
+    private RestPoint respawnPoint = null;
+
+    private HashSet<IReset> resetRegistry = new HashSet<IReset>();
+
     private void Awake()
     {
         if (Instance != null)
@@ -39,5 +50,51 @@ public class DataManager : MonoBehaviour
     public void RestoreDefaults()
     {
         
+    }
+
+    public void RegisterReset(IReset reset)
+    {
+        resetRegistry.Add(reset);
+    }
+
+    void InitiateReset()
+    {
+        foreach (IReset reset in resetRegistry)
+        {
+            if (reset != null)
+            {
+                reset.DoReset();
+            }
+        }
+    }
+
+    public void SetRespawn(RestPoint point)
+    {
+        respawnPoint = point;
+    }
+
+    public RestPoint GetRespawnPoint()
+    {
+        return respawnPoint;
+    }
+
+    public void ResetWorld()
+    {
+        //TODO
+        RestoreHealing();
+        RestoreVitals();
+        InitiateReset();
+    }
+
+    void RestoreHealing()
+    {
+        CurrentHeals = MaxHeals;
+    }
+
+    void RestoreVitals()
+    {
+        CurrentHealth = MaxHealth;
+        CurrentStamina = MaxStamina;
+        CurrentPoise = MaxPoise;
     }
 }
