@@ -227,6 +227,22 @@ public class PlayerManager : MonoBehaviour
 
     private RestPoint restAttemptPoint = null;
 
+    public float GameOverSpeed = 4f;
+
+    public float GameOverMinSpeed = .1f;
+
+    public float GameOverHold = 4f;
+
+    private float gameOverTimer = 0f;
+
+    private bool isGameOver = false;
+
+    private bool didGameOverRespawn = false;
+
+    private float respawnEffectTimer = 0f;
+
+    public float RespawnEffectTime = 1f;
+
     private Vector2 targetFacing;
 
     private HashSet<GameObject> overlappingWeapons = new HashSet<GameObject>();
@@ -270,6 +286,8 @@ public class PlayerManager : MonoBehaviour
         ContinueBlockingAttack();
         RegenStamina();
         HandleHealing();
+        ContinueGameOver();
+        ContinueRespawn();
 
         if (State == PlayerState.Rolling)
         {
@@ -870,7 +888,78 @@ public class PlayerManager : MonoBehaviour
         InterruptResting(PlayerState.Dead);
         State = PlayerState.Dead;
         modelAnimator.CrossFade(Animator.StringToHash("RobogirlArmature|Die"), 0.2f);
-        // TODO game over screen
+    }
+
+    public void EventGameOver()
+    {
+        isGameOver = true;
+        gameOverTimer = GameOverSpeed;
+    }
+
+    void ContinueGameOver()
+    {
+        if(isGameOver)
+        {
+            gameOverTimer -= Time.deltaTime;
+
+            float gameSpeed = Mathf.Max(gameOverTimer / GameOverSpeed, GameOverMinSpeed);
+            Time.timeScale = gameSpeed;
+
+            float gameOverProgress = 1f - Mathf.Max(gameOverTimer / GameOverSpeed, 0);
+            PlayerInterface.Instance.SetGameOverProgress(gameOverProgress);
+
+            if(gameOverProgress >= 1 && !didGameOverRespawn)
+            {
+                Respawn();
+                didGameOverRespawn = true;
+            }
+
+            if (gameOverTimer <= -(GameOverHold * GameOverMinSpeed))
+            {
+                FinishGameOver();
+            }
+        }
+    }
+
+    void FinishGameOver()
+    {
+        gameOverTimer = 0;
+        isGameOver = false;
+        didGameOverRespawn = false;
+        Time.timeScale = 1f;
+        respawnEffectTimer = RespawnEffectTime;
+    }
+
+    void Respawn()
+    {
+        DataManager.Instance.ResetWorld();
+
+        RestPoint respawnPoint = GetRespawnPoint();
+        GetComponent<CharacterController>().enabled = false; // See https://discussions.unity.com/t/teleporting-character-issue-with-transform-position-in-unity-2018-3/221631/4
+        transform.position = respawnPoint.gameObject.transform.position + new Vector3(1f, 0f, 0f);
+        GetComponent<CharacterController>().enabled = true;
+        FacePosition(respawnPoint.gameObject.transform.position);
+        State = PlayerState.Ready;
+    }
+
+    void ContinueRespawn()
+    {
+        if(respawnEffectTimer > 0)
+        {
+            respawnEffectTimer -= Time.deltaTime;
+            PlayerInterface.Instance.SetGameOverProgress(respawnEffectTimer / RespawnEffectTime, false);
+
+            if(respawnEffectTimer <= 0)
+            {
+                respawnEffectTimer = 0;
+                PlayerInterface.Instance.SetGameOverProgress(0);
+            }
+        }
+    }
+
+    RestPoint GetRespawnPoint()
+    {
+        return DataManager.Instance.GetRespawnPoint();
     }
 
     void Stagger(Enemy attacker)

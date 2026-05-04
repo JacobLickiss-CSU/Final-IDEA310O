@@ -33,4 +33,9 @@ public class PlayerAnimationEvents : MonoBehaviour
     {
         PlayerManager.Instance.EventStartReseting();
     }
+
+    public void EventGameOver()
+    {
+        PlayerManager.Instance.EventGameOver();
+    }
 }

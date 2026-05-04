@@ -9,10 +9,17 @@ public class RestPoint : MonoBehaviour
 
     public float InteractDistance = 1.5f;
 
+    public bool IsDefaultRespawn = false;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         interactAction = InputSystem.actions.FindAction("Interact");
+
+        if(IsDefaultRespawn)
+        {
+            DataManager.Instance.SetDefaultRespawn(this);
+        }
     }
 
     // Update is called once per frame

@@ -345,6 +345,10 @@ MonoBehaviour:
   BlockAngle: 45
   StaggerTime: 1
   StaminaEmptyPenaltyTime: 1
+  GameOverSpeed: 1
+  GameOverMinSpeed: 0.1
+  GameOverHold: 2.5
+  RespawnEffectTime: 1
 --- !u!143 &7856368613324904279
 CharacterController:
   m_ObjectHideFlags: 0

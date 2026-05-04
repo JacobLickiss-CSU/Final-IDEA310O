@@ -29,6 +29,8 @@ public class DataManager : MonoBehaviour
 
     private RestPoint respawnPoint = null;
 
+    private RestPoint defaultRespawnPoint = null;
+
     private HashSet<IReset> resetRegistry = new HashSet<IReset>();
 
     private void Awake()
@@ -75,7 +77,14 @@ public class DataManager : MonoBehaviour
 
     public RestPoint GetRespawnPoint()
     {
+        if (respawnPoint == null) return defaultRespawnPoint;
+
         return respawnPoint;
+    }
+
+    public void SetDefaultRespawn(RestPoint point)
+    {
+        defaultRespawnPoint = point;
     }
 
     public void ResetWorld()
