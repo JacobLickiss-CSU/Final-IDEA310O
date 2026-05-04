@@ -28,6 +28,6 @@ public class PlayerInterface : MonoBehaviour
     {
         GameOverFilter.color = new Color(0f, 0f, 0f, progress);
         GameOverTextBack.color = new Color(0f, 0f, 0f, showText ? progress : 0);
-        GameOverText.color = new Color(1f, 1f, 1f, showText ? progress : 0);
+        GameOverText.color = new Color(GameOverText.color.r, GameOverText.color.g, GameOverText.color.b, showText ? progress : 0);
     }
 }
