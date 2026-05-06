@@ -8,6 +8,8 @@ public class Enemy : MonoBehaviour, IReset
 
     public string IdleAnimationName = "|Idle";
 
+    public string WalkAnimationName = "|Walk";
+
     public string AttackAnimationName = "|Attack";
 
     public string HitAnimationName = "|Hit";
@@ -234,6 +236,18 @@ public class Enemy : MonoBehaviour, IReset
             {
                 agent.destination = homePosition;
             }
+
+            if(Vector3.Distance(transform.position, agent.destination) > .1f && !agent.isStopped)
+            {
+                CrossFadeIfExists(WalkAnimationName, 0.1f);
+            }
+            else
+            {
+                if(!agent.isStopped)
+                {
+                    CrossFadeIfExists(IdleAnimationName, 0.1f);
+                }
+            }
         }
     }
 
@@ -357,7 +371,7 @@ public class Enemy : MonoBehaviour, IReset
     void Die()
     {
         State = EnemyState.Dead;
-        CrossFadeIfExists(DieAnimationName, 0.2f);
+        CrossFadeIfExists(DieAnimationName, 0.1f);
     }
 
     void Stagger()
@@ -370,13 +384,15 @@ public class Enemy : MonoBehaviour, IReset
         State = EnemyState.Stagger;
         staggerTimer = 0;
         agent.isStopped = true;
-        CrossFadeIfExists(HitAnimationName, 0.2f);
+        CrossFadeIfExists(HitAnimationName, 0.1f);
     }
 
     void HandleStaggering()
     {
         if (State == EnemyState.Stagger)
         {
+            LookTowardsPlayer();
+
             staggerTimer += Time.deltaTime;
             if (staggerTimer >= StaggerTime)
             {
@@ -393,7 +409,7 @@ public class Enemy : MonoBehaviour, IReset
         attackNeutralized = false;
         attackTimer = 0f;
         agent.isStopped = true;
-        CrossFadeIfExists(AttackAnimationName, 0.2f);
+        CrossFadeIfExists(AttackAnimationName, 0.1f, true);
     }
 
     void ContinueAttacking()
@@ -429,7 +445,7 @@ public class Enemy : MonoBehaviour, IReset
         attackTimer = 0;
         State = endState;
         agent.isStopped = false;
-        CrossFadeIfExists(IdleAnimationName, 0.2f);
+        CrossFadeIfExists(IdleAnimationName, 0.1f);
     }
 
     public void NeutralizeAttack()
@@ -438,12 +454,23 @@ public class Enemy : MonoBehaviour, IReset
         attackNeutralized = true;
     }
 
-    void CrossFadeIfExists(string animationName, float normalizedTransitionDuration)
+    void CrossFadeIfExists(string animationName, float normalizedTransitionDuration, bool force = false)
     {
         int targetState = Animator.StringToHash(animationName);
         if(modelAnimator.HasState(0, targetState))
         {
-            modelAnimator.Play(targetState, 0, normalizedTransitionDuration);
+            int nextState = -1;
+            if(modelAnimator.IsInTransition(0))
+            {
+                nextState = modelAnimator.GetNextAnimatorStateInfo(0).shortNameHash;
+            }
+
+            int currentState = modelAnimator.GetCurrentAnimatorStateInfo(0).shortNameHash;
+            if((targetState != currentState && targetState != nextState) || force)
+            {
+                modelAnimator.CrossFade(targetState, normalizedTransitionDuration);
+            }
+            //modelAnimator.Play(targetState, 0, normalizedTransitionDuration);
         }
         else
         {

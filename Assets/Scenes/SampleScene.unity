@@ -427,6 +427,22 @@ PrefabInstance:
       propertyPath: m_Name
       value: EnemyConstruct (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 3999497104943230516, guid: 04d8f6e593cd0234ea1acb9d28efd70b, type: 3}
+      propertyPath: attackMoveEnd
+      value: 2.308333
+      objectReference: {fileID: 0}
+    - target: {fileID: 3999497104943230516, guid: 04d8f6e593cd0234ea1acb9d28efd70b, type: 3}
+      propertyPath: attackActiveEnd
+      value: 2.433333
+      objectReference: {fileID: 0}
+    - target: {fileID: 3999497104943230516, guid: 04d8f6e593cd0234ea1acb9d28efd70b, type: 3}
+      propertyPath: attackMoveStart
+      value: 1.933333
+      objectReference: {fileID: 0}
+    - target: {fileID: 3999497104943230516, guid: 04d8f6e593cd0234ea1acb9d28efd70b, type: 3}
+      propertyPath: attackActiveStart
+      value: 1.891667
+      objectReference: {fileID: 0}
     - target: {fileID: 4160448685633735959, guid: 04d8f6e593cd0234ea1acb9d28efd70b, type: 3}
       propertyPath: m_LocalPosition.x
       value: -20.163723

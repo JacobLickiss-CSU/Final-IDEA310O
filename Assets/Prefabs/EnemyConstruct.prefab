@@ -211,9 +211,10 @@ MonoBehaviour:
   TargetFocus: {fileID: 1515989428963567465}
   modelAnimator: {fileID: 2601675257829010884}
   IdleAnimationName: ConstructArmature|Idle
+  WalkAnimationName: ConstructArmature|Walk
   AttackAnimationName: ConstructArmature|Attack
-  HitAnimationName: '|Hit'
-  DieAnimationName: '|Die'
+  HitAnimationName: ConstructArmature|Stagger
+  DieAnimationName: ConstructArmature|Die
   MaxHealth: 50
   CurrentHealth: 50
   MaxPoise: 10
@@ -232,11 +233,11 @@ MonoBehaviour:
   MaxAttackAngle: 4
   AttackDamage: 15
   attackTime: 4
-  attackActiveStart: 1.041667
-  attackActiveEnd: 1.583333
+  attackActiveStart: 1.891667
+  attackActiveEnd: 2.433333
   attackMoveSpeed: 6
-  attackMoveStart: 1.083333
-  attackMoveEnd: 1.458333
+  attackMoveStart: 1.933333
+  attackMoveEnd: 2.308333
 --- !u!195 &4112258323114665051
 NavMeshAgent:
   m_ObjectHideFlags: 0
