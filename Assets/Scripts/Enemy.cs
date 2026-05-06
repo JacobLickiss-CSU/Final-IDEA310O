@@ -129,6 +129,7 @@ public class Enemy : MonoBehaviour, IReset
         weaponTouching = false;
         attackTimer = 0f;
         attackNeutralized = false;
+        GetComponent<CharacterController>().enabled = true;
     }
 
     // Update is called once per frame
@@ -371,6 +372,7 @@ public class Enemy : MonoBehaviour, IReset
     void Die()
     {
         State = EnemyState.Dead;
+        GetComponent<CharacterController>().enabled = false;
         CrossFadeIfExists(DieAnimationName, 0.1f);
     }
 
