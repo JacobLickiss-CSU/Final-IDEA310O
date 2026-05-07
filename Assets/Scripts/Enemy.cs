@@ -1,4 +1,5 @@
 using UnityEngine;
+using System;
 
 public class Enemy : MonoBehaviour, IReset
 {
@@ -97,6 +98,8 @@ public class Enemy : MonoBehaviour, IReset
     private Vector3 resetPosition;
 
     private Quaternion resetRotation;
+
+    public GameObject HitEffect;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -347,12 +350,34 @@ public class Enemy : MonoBehaviour, IReset
     void GetHit(PlayerManager attacker)
     {
         TakeDamage(attacker.AttackDamage);
+        PlayHitEffect();
 
         if(State != EnemyState.Dead)
         {
-            if (CurrentPoise <= 0)
+            if(CurrentPoise <= 0)
             {
                 Stagger();
+            }
+        }
+    }
+
+    void PlayHitEffect()
+    {
+        CharacterController controller = GetComponent<CharacterController>();
+
+        Vector3 point1 = controller.center + transform.position + (transform.up * ((-controller.height * 0.5f) + controller.radius));
+        Vector3 point2 = controller.center + transform.position + (transform.up * ((controller.height * 0.5f) + controller.radius));
+
+        point1.y -= controller.height;
+        point2.y -= controller.height;
+
+        RaycastHit[] hits = Physics.CapsuleCastAll(point1, point2, controller.radius, new Vector3(0, 1, 0), controller.height, Int32.MaxValue, QueryTriggerInteraction.Collide);
+        foreach (RaycastHit hit in hits)
+        {
+            if (hit.collider.gameObject.tag == "PlayerWeapon")
+            {
+                GameObject effect = Instantiate(HitEffect);
+                effect.transform.position = hit.point;
             }
         }
     }

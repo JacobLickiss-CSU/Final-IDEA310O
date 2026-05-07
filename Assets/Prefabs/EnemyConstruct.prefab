@@ -242,6 +242,7 @@ MonoBehaviour:
   attackMoveSpeed: 6
   attackMoveStart: 1.933333
   attackMoveEnd: 2.308333
+  HitEffect: {fileID: 1747636559562972692, guid: ce9a6e1ad4d1ddf46845e91cc447d586, type: 3}
 --- !u!195 &4112258323114665051
 NavMeshAgent:
   m_ObjectHideFlags: 0
