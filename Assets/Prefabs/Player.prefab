@@ -304,7 +304,7 @@ Camera:
     y: 0
     width: 1
     height: 1
-  near clip plane: 0.3
+  near clip plane: 0.1
   far clip plane: 1000
   field of view: 60
   orthographic: 0
@@ -392,6 +392,8 @@ MonoBehaviour:
   LookSensitivity: 0.6
   MinAngle: -80
   MaxAngle: 80
+  CollisionSpaceBack: 0.1
+  CollisionSpaceSides: 0.3
   VerticalInverted: 1
   CameraFocus: {fileID: 1957233307378076987}
   CameraPivot: {fileID: 6055724640165196374}

@@ -12,6 +12,10 @@ public class CameraManager : MonoBehaviour
 
     public float MaxAngle = 80f;
 
+    public float CollisionSpaceBack = .1f;
+
+    public float CollisionSpaceSides = .3f;
+
     public bool VerticalInverted = false;
 
     public GameObject CameraFocus;
@@ -117,7 +121,7 @@ public class CameraManager : MonoBehaviour
         {
             if (hit.collider.gameObject.tag != "Player" && hit.collider.gameObject.tag != "Enemy" && hit.collider.gameObject.tag != "PlayerWeapon" && hit.collider.gameObject.tag != "InvisibleWall")
             {
-                transform.position = hit.point;
+                transform.position = hit.point - cameraDirection * CollisionSpaceBack;
             }
             else
             {
@@ -127,6 +131,30 @@ public class CameraManager : MonoBehaviour
         else
         {
             transform.position = CameraTarget.transform.position;
+        }
+
+        SpaceSides();
+    }
+
+    void SpaceSides()
+    {
+        Vector3 right = transform.right;
+        Vector3 left = -right;
+
+        RaycastHit hit;
+        if (Physics.Raycast(transform.position, right, out hit, CollisionSpaceSides))
+        {
+            if (hit.collider.gameObject.tag != "Player" && hit.collider.gameObject.tag != "Enemy" && hit.collider.gameObject.tag != "PlayerWeapon" && hit.collider.gameObject.tag != "InvisibleWall")
+            {
+                transform.position = hit.point - right * CollisionSpaceSides;
+            }
+        }
+        if (Physics.Raycast(transform.position, left, out hit, CollisionSpaceSides))
+        {
+            if (hit.collider.gameObject.tag != "Player" && hit.collider.gameObject.tag != "Enemy" && hit.collider.gameObject.tag != "PlayerWeapon" && hit.collider.gameObject.tag != "InvisibleWall")
+            {
+                transform.position = hit.point - left * CollisionSpaceSides;
+            }
         }
     }
 
