@@ -962,6 +962,7 @@ public class PlayerManager : MonoBehaviour
         DataManager.Instance.ResetWorld();
 
         RestPoint respawnPoint = GetRespawnPoint();
+        respawnPoint.PrepareArea();
         GetComponent<CharacterController>().enabled = false; // See https://discussions.unity.com/t/teleporting-character-issue-with-transform-position-in-unity-2018-3/221631/4
         transform.position = respawnPoint.gameObject.transform.position + new Vector3(1f, 0f, 0f);
         GetComponent<CharacterController>().enabled = true;

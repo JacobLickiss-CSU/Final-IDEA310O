@@ -77,4 +77,9 @@ public class RestPoint : MonoBehaviour
     {
         fog.PlayDisable();
     }
+
+    public void PrepareArea()
+    {
+        TransitionManager.Instance.InitState(transform.parent.gameObject);
+    }
 }

@@ -122,12 +122,12 @@ public class Enemy : MonoBehaviour, IReset
         State = EnemyState.Ready;
         transform.position = resetPosition;
         transform.rotation = resetRotation;
-        agent.destination = homePosition;
-        agent.isStopped = false;
+        if(gameObject.activeInHierarchy) agent.destination = homePosition;
+        if (gameObject.activeInHierarchy) agent.isStopped = false;
         CurrentHealth = MaxHealth;
         CurrentPoise = MaxPoise;
         IsAware = false;
-        modelAnimator.Play(Animator.StringToHash(IdleAnimationName));
+        if (gameObject.activeInHierarchy) modelAnimator.Play(Animator.StringToHash(IdleAnimationName));
         staggerTimer = 0f;
         weaponTouching = false;
         attackTimer = 0f;
