@@ -19,6 +19,10 @@ public class PlayerInterface : MonoBehaviour
 
     public UIDocument MainHUD;
 
+    public GameMenuManager MenuManager;
+
+    private InputAction menuAction;
+
     private Dictionary<VisualElement, Color> baseColors = new Dictionary<VisualElement, Color>();
 
     private Dictionary<VisualElement, Color> baseBackgroundColors = new Dictionary<VisualElement, Color>();
@@ -37,12 +41,22 @@ public class PlayerInterface : MonoBehaviour
 
     public Texture Heal_Gamepad;
 
+    public bool IsMenuOpen
+    {
+        get
+        {
+            return MenuManager.gameObject.activeSelf;
+        }
+    }
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         Instance = this;
 
         SaveColors();
+
+        menuAction = InputSystem.actions.FindAction("Menu");
     }
 
     void SaveColors()
@@ -64,6 +78,18 @@ public class PlayerInterface : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if(menuAction.triggered)
+        {
+            if (MenuManager.gameObject.activeSelf)
+            {
+                MenuManager.Continue();
+            }
+            else
+            {
+                MenuManager.Open();
+            }
+        }
+
         UpdateHUD();
     }
 

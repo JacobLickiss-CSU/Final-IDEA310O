@@ -57,12 +57,19 @@ public class DataManager : MonoBehaviour
 
     public void LoadMenu()
     {
+        RestoreDefaults();
+
         SceneManager.LoadScene("MainMenu");
     }
 
     public void RestoreDefaults()
     {
-        
+        resetRegistry.Clear();
+
+        CurrentHealth = MaxHealth;
+        CurrentStamina = MaxStamina;
+        CurrentPoise = MaxPoise;
+        CurrentHeals = MaxHeals;
     }
 
     public void RegisterReset(IReset reset)

@@ -16,7 +16,9 @@ public class RestPoint : MonoBehaviour, IInteractable
     {
         interactAction = InputSystem.actions.FindAction("Interact");
 
-        if(IsDefaultRespawn)
+        interactAction.started += AttemptInteract;
+
+        if (IsDefaultRespawn)
         {
             DataManager.Instance.SetDefaultRespawn(this);
         }
@@ -29,6 +31,11 @@ public class RestPoint : MonoBehaviour, IInteractable
         {
             CheckForInteract();
         }
+    }
+
+    void OnDestroy()
+    {
+        interactAction.started -= AttemptInteract;
     }
 
     public float GetInteractDistance()
@@ -48,18 +55,31 @@ public class RestPoint : MonoBehaviour, IInteractable
 
         PlayerState state = PlayerManager.Instance.State;
 
-        if(state == PlayerState.Ready && distance <= InteractDistance)
+        if(state == PlayerState.Ready && distance <= InteractDistance && !PlayerInterface.Instance.IsMenuOpen)
         {
             DisplayInteractPrompt();
 
             if(interactAction.IsPressed())
             {
-                Interact();
+                //Interact();
             }
         }
         else
         {
             HideInteractPrompt();
+        }
+    }
+
+    void AttemptInteract(InputAction.CallbackContext context)
+    {
+        Vector3 playerPosition = PlayerManager.Instance.gameObject.transform.position;
+        float distance = Vector3.Distance(playerPosition, transform.position);
+
+        PlayerState state = PlayerManager.Instance.State;
+
+        if (state == PlayerState.Ready && distance <= InteractDistance && !PlayerInterface.Instance.IsMenuOpen)
+        {
+            Interact();
         }
     }
 

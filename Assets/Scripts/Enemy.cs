@@ -119,20 +119,23 @@ public class Enemy : MonoBehaviour, IReset
 
     public void DoReset()
     {
-        State = EnemyState.Ready;
-        transform.position = resetPosition;
-        transform.rotation = resetRotation;
-        if(gameObject.activeInHierarchy) agent.destination = homePosition;
-        if (gameObject.activeInHierarchy) agent.isStopped = false;
-        CurrentHealth = MaxHealth;
-        CurrentPoise = MaxPoise;
-        IsAware = false;
-        if (gameObject.activeInHierarchy) modelAnimator.Play(Animator.StringToHash(IdleAnimationName));
-        staggerTimer = 0f;
-        weaponTouching = false;
-        attackTimer = 0f;
-        attackNeutralized = false;
-        GetComponent<CharacterController>().enabled = true;
+        if(gameObject != null)
+        {
+            State = EnemyState.Ready;
+            transform.position = resetPosition;
+            transform.rotation = resetRotation;
+            if (gameObject.activeInHierarchy) agent.destination = homePosition;
+            if (gameObject.activeInHierarchy) agent.isStopped = false;
+            CurrentHealth = MaxHealth;
+            CurrentPoise = MaxPoise;
+            IsAware = false;
+            if (gameObject.activeInHierarchy) modelAnimator.Play(Animator.StringToHash(IdleAnimationName));
+            staggerTimer = 0f;
+            weaponTouching = false;
+            attackTimer = 0f;
+            attackNeutralized = false;
+            GetComponent<CharacterController>().enabled = true;
+        }
     }
 
     // Update is called once per frame
