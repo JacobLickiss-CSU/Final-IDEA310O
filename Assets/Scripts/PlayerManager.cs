@@ -372,11 +372,11 @@ public class PlayerManager : MonoBehaviour
             }
 
             MovementMode mode = MovementMode.Run;
-            if(walkAction.IsPressed())
+            if(walkAction.IsPressed() && !Camera.IsTargetLocked)
             {
                 mode = MovementMode.Walk;
             }
-            if(moveValue.magnitude < walkThreshhold)
+            if(moveValue.magnitude < walkThreshhold && !Camera.IsTargetLocked)
             {
                 if(walkTimer >= walkTimeThreshhold)
                 {
@@ -413,12 +413,40 @@ public class PlayerManager : MonoBehaviour
             {
                 switch (mode)
                 {
-                    case MovementMode.Run: { modelAnimator.CrossFade(Animator.StringToHash("RobogirlArmature|Run"), 0.2f); break; }
+                    case MovementMode.Run: {
+                            if (moveValue.x < -.5 && Camera.IsTargetLocked)
+                            {
+                                modelAnimator.CrossFade(Animator.StringToHash("RobogirlArmature|RunStrafeLeft"), 0.2f);
+                            }
+                            else if (moveValue.x > .5 && Camera.IsTargetLocked)
+                            {
+                                modelAnimator.CrossFade(Animator.StringToHash("RobogirlArmature|RunStrafeRight"), 0.2f);
+                            }
+                            else
+                            {
+                                modelAnimator.CrossFade(Animator.StringToHash("RobogirlArmature|Run"), 0.2f);
+                            }
+                            break;
+                        }
                     case MovementMode.Walk: { modelAnimator.CrossFade(Animator.StringToHash("RobogirlArmature|Walk"), 0.2f); break; }
                     case MovementMode.Sprint: { modelAnimator.CrossFade(Animator.StringToHash("RobogirlArmature|Sprint"), 0.2f); break; }
-                    case MovementMode.BlockingRun: { modelAnimator.CrossFade(Animator.StringToHash("RobogirlArmature|Block"), 0.2f); break; } // TODO
-                    case MovementMode.BlockingWalk: { modelAnimator.CrossFade(Animator.StringToHash("RobogirlArmature|Block"), 0.2f); break; } // TODO
-                    case MovementMode.BlockingSprint: { modelAnimator.CrossFade(Animator.StringToHash("RobogirlArmature|Block"), 0.2f); break; } // TODO
+                    case MovementMode.BlockingRun: {
+                            if (moveValue.x < -.5 && Camera.IsTargetLocked)
+                            {
+                                modelAnimator.CrossFade(Animator.StringToHash("RobogirlArmature|RunStrafeLeftBlock"), 0.2f);
+                            }
+                            else if (moveValue.x > .5 && Camera.IsTargetLocked)
+                            {
+                                modelAnimator.CrossFade(Animator.StringToHash("RobogirlArmature|RunStrafeRightBlock"), 0.2f);
+                            }
+                            else
+                            {
+                                modelAnimator.CrossFade(Animator.StringToHash("RobogirlArmature|RunBlock"), 0.2f);
+                            }
+                            break;
+                        }
+                    case MovementMode.BlockingWalk: { modelAnimator.CrossFade(Animator.StringToHash("RobogirlArmature|WalkBlock"), 0.2f); break; }
+                    case MovementMode.BlockingSprint: { modelAnimator.CrossFade(Animator.StringToHash("RobogirlArmature|SprintBlock"), 0.2f); break; }
                     default: { modelAnimator.CrossFade(Animator.StringToHash("RobogirlArmature|Run"), 0.2f); break; }
                 }
             }
@@ -433,7 +461,7 @@ public class PlayerManager : MonoBehaviour
                 tempFacing = GetInputFacing();
             }
 
-                float speed = 0f;
+            float speed = 0f;
             switch(mode)
             {
                 case MovementMode.Run: { speed = runSpeed; break; }
@@ -663,6 +691,7 @@ public class PlayerManager : MonoBehaviour
                 case AttackIndex.AttackLight1: return AttackIndex.AttackLight2;
                 case AttackIndex.AttackLight2: return AttackIndex.AttackLight1;
                 case AttackIndex.AttackHeavy: return AttackIndex.AttackLight2;
+                case AttackIndex.AttackHeavy2: return AttackIndex.AttackLight1;
             }
         }
 
@@ -671,9 +700,10 @@ public class PlayerManager : MonoBehaviour
             switch (attackIndex)
             {
                 case AttackIndex.None: return AttackIndex.AttackHeavy;
-                case AttackIndex.AttackLight1: return AttackIndex.AttackHeavy;
+                case AttackIndex.AttackLight1: return AttackIndex.AttackHeavy2;
                 case AttackIndex.AttackLight2: return AttackIndex.AttackHeavy;
-                case AttackIndex.AttackHeavy: return AttackIndex.AttackHeavy;
+                case AttackIndex.AttackHeavy: return AttackIndex.AttackHeavy2;
+                case AttackIndex.AttackHeavy2: return AttackIndex.AttackHeavy;
             }
         }
 
@@ -1211,7 +1241,8 @@ public enum AttackIndex
     None,
     AttackLight1,
     AttackLight2,
-    AttackHeavy
+    AttackHeavy,
+    AttackHeavy2
 }
 
 public static class AttackIndexExtensions
@@ -1224,6 +1255,7 @@ public static class AttackIndexExtensions
             case AttackIndex.AttackLight1: return "RobogirlArmature|AttackLight";
             case AttackIndex.AttackLight2: return "RobogirlArmature|AttackLight2";
             case AttackIndex.AttackHeavy: return "RobogirlArmature|AttackHeavy";
+            case AttackIndex.AttackHeavy2: return "RobogirlArmature|AttackHeavy2";
             default: return "RobogirlArmature|Idle";
         }
     }
