@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class Spinning : MonoBehaviour
 {
-    public float Speed = 1f;
+    public Vector3 Speed = new Vector3(0f, 0f, 90f);
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -13,6 +13,6 @@ public class Spinning : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        transform.eulerAngles = new Vector3(transform.eulerAngles.x, transform.eulerAngles.y, transform.eulerAngles.z + (Time.deltaTime * Speed));
+        transform.eulerAngles += (Time.deltaTime * Speed);
     }
 }

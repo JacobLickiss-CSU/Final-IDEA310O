@@ -70,6 +70,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::RestPoint
   fog: {fileID: 3488362454085888768}
   InteractDistance: 1.5
+  IsDefaultRespawn: 0
 --- !u!1 &6208578468327104701
 GameObject:
   m_ObjectHideFlags: 0
@@ -276,7 +277,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b6056b490f3f1344785fbc71f34b23a7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Spinning
-  Speed: 90
+  Speed: {x: 0, y: 0, z: 90}
 --- !u!4 &7981849769768965145 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: b05f2eaa969a4a84b861184ed95ed365, type: 3}
