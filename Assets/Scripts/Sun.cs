@@ -20,13 +20,15 @@ public class Sun : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(SunLight != null && PlayerManager.Instance != null)
+        Transform targetTransform = PlayerManager.Instance != null ? PlayerManager.Instance.transform : Camera.main.transform;
+
+        if(SunLight != null)
         {
-            transform.position = PlayerManager.Instance.transform.position - SunLight.transform.forward * distance;
-            transform.LookAt(PlayerManager.Instance.transform.position);
+            transform.position = targetTransform.position - SunLight.transform.forward * distance;
+            transform.LookAt(targetTransform.position);
 
             // Dim light below 0f
-            float depth = PlayerManager.Instance.transform.position.y;
+            float depth = targetTransform.position.y;
             if (depth < 0)
             {
                 if (depth <= -10)
