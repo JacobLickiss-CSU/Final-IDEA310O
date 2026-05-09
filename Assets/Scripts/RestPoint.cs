@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class RestPoint : MonoBehaviour
+public class RestPoint : MonoBehaviour, IInteractable
 {
     public FogEffect fog;
 
@@ -31,6 +31,16 @@ public class RestPoint : MonoBehaviour
         }
     }
 
+    public float GetInteractDistance()
+    {
+        return InteractDistance;
+    }
+
+    public string GetInteractVerb()
+    {
+        return "REST";
+    }
+
     void CheckForInteract()
     {
         Vector3 playerPosition = PlayerManager.Instance.gameObject.transform.position;
@@ -55,12 +65,12 @@ public class RestPoint : MonoBehaviour
 
     void DisplayInteractPrompt()
     {
-        // TODO
+        PlayerInterface.Instance.InteractableInRange(this);
     }
 
     void HideInteractPrompt()
     {
-        // TODO
+        PlayerInterface.Instance.InteractableExitRange(this);
     }
 
     void Interact()

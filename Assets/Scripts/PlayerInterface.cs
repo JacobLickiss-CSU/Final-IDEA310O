@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using UnityEngine.UIElements;
 using TMPro;
 using System.Collections.Generic;
+using UnityEngine.InputSystem;
 
 public class PlayerInterface : MonoBehaviour
 {
@@ -23,6 +24,18 @@ public class PlayerInterface : MonoBehaviour
     private Dictionary<VisualElement, Color> baseBackgroundColors = new Dictionary<VisualElement, Color>();
 
     private Dictionary<VisualElement, Color> baseTints = new Dictionary<VisualElement, Color>();
+
+    private IInteractable interactable = null;
+
+    public string CurrentScheme = "Keyboard&Mouse";
+
+    public Texture Interact_Keyboard;
+
+    public Texture Interact_Gamepad;
+
+    public Texture Heal_Keyboard;
+
+    public Texture Heal_Gamepad;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -71,6 +84,8 @@ public class PlayerInterface : MonoBehaviour
 
             var healingText = MainHUD.rootVisualElement.Q<Label>("HealCount");
             healingText.text = ""+DataManager.Instance.CurrentHeals;
+
+            UpdateInputPrompt();
         }
     }
 
@@ -112,4 +127,105 @@ public class PlayerInterface : MonoBehaviour
             renderTexture.Create();
         }
     }
+
+    public void InteractableInRange(IInteractable interactable)
+    {
+        if(this.interactable != null && this.interactable != interactable)
+        {
+            HideInteractable(interactable);
+        }
+
+        ShowInteractable(interactable);
+    }
+
+    public void InteractableExitRange(IInteractable interactable)
+    {
+        if (this.interactable == interactable)
+        {
+            HideInteractable(interactable);
+        }
+    }
+
+    void ShowInteractable(IInteractable interactable)
+    {
+        this.interactable = interactable;
+
+        VisibilityInteractPrompt(interactable.GetInteractVerb(), true);
+    }
+
+    void HideInteractable(IInteractable interactable)
+    {
+        VisibilityInteractPrompt("", false);
+
+        this.interactable = null;
+    }
+
+    void VisibilityInteractPrompt(string message, bool visible)
+    {
+        if (MainHUD != null)
+        {
+            var interactPrompt = MainHUD.rootVisualElement.Q<UnityEngine.UIElements.VisualElement>("InteractPrompt");
+            var interactMessage = MainHUD.rootVisualElement.Q<UnityEngine.UIElements.Label>("InteractText");
+
+            if(interactPrompt != null && interactMessage != null)
+            {
+                interactPrompt.visible = visible;
+                interactMessage.text = message;
+            }
+        }
+    }
+
+    void UpdateInputPrompt()
+    {
+        if(PlayerManager.Instance != null)
+        {
+            if(PlayerManager.Instance.State != PlayerState.Ready)
+            {
+                VisibilityInteractPrompt("", false);
+            }
+            else if(interactable != null)
+            {
+                ShowInteractable(this.interactable);
+            }
+        }
+    }
+
+    void OnControlsChanged(PlayerInput input)
+    {
+        if(input == null) return;
+
+        if(CurrentScheme != input.currentControlScheme)
+        {
+            SetControlsUI(input.currentControlScheme);
+            CurrentScheme = input.currentControlScheme;
+        }
+    }
+
+    void SetControlsUI(string controlScheme)
+    {
+        if(controlScheme == null) return;
+
+        if(MainHUD != null)
+        {
+            var interactImage = MainHUD.rootVisualElement.Q<UnityEngine.UIElements.Image>("InteractImage");
+
+            switch(controlScheme)
+            {
+                case "Keyboard&Mouse": { interactImage.image = Interact_Keyboard; break; }
+                case "Gamepad": { interactImage.image = Interact_Gamepad; break; }
+                default: { interactImage.image = Interact_Keyboard; break; }
+            }
+
+            var healImage = MainHUD.rootVisualElement.Q<UnityEngine.UIElements.Image>("HealPrompt");
+
+            switch (controlScheme)
+            {
+                case "Keyboard&Mouse": { healImage.image = Heal_Keyboard; break; }
+                case "Gamepad": { healImage.image = Heal_Gamepad; break; }
+                default: { healImage.image = Heal_Keyboard; break; }
+            }
+        }
+    }
+
+    
 }
