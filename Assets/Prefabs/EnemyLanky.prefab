@@ -201,7 +201,7 @@ MonoBehaviour:
   PersonalSpace: 0.5
   EngageTurnSpeed: 180
   gravityValue: -9.81
-  MaxAttackAngle: 6
+  MaxAttackAngle: 15
   AttackDamage: 20
   attackTime: 2
   attackActiveStart: 0
@@ -220,7 +220,7 @@ NavMeshAgent:
   m_Enabled: 1
   m_AgentTypeID: 0
   m_Radius: 0.6
-  m_Speed: 3.5
+  m_Speed: 5
   m_Acceleration: 8
   avoidancePriority: 50
   m_AngularSpeed: 120
