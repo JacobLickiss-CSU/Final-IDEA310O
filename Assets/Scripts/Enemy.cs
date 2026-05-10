@@ -380,7 +380,15 @@ public class Enemy : MonoBehaviour, IReset
             if (hit.collider.gameObject.tag == "PlayerWeapon")
             {
                 GameObject effect = Instantiate(HitEffect);
-                effect.transform.position = hit.point;
+                if (hit.point.magnitude < .05f)
+                {
+                    Vector3 center = hit.collider.gameObject.GetComponent<Collider>().bounds.center;
+                    effect.transform.position = controller.ClosestPoint(center);
+                }
+                else
+                {
+                    effect.transform.position = hit.point;
+                }
             }
         }
     }

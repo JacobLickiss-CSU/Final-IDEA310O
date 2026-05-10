@@ -892,14 +892,23 @@ public class PlayerManager : MonoBehaviour
         point2.y -= controller.height;
 
         RaycastHit[] hits = Physics.CapsuleCastAll(point1, point2, controller.radius, new Vector3(0, 1, 0), controller.height, Int32.MaxValue, QueryTriggerInteraction.Collide);
+        
         foreach (RaycastHit hit in hits)
         {
             if (hit.collider.gameObject.tag == "EnemyWeapon")
             {
-                if(hit.collider.gameObject.GetComponent<EnemyWeapon>().Enemy.GetComponent<Enemy>().IsAttackActive)
+                if (hit.collider.gameObject.GetComponent<EnemyWeapon>().Enemy.GetComponent<Enemy>().IsAttackActive)
                 {
                     GameObject effect = Instantiate(HitEffect);
-                    effect.transform.position = hit.point;
+                    if (hit.point.magnitude < .05f)
+                    {
+                        Vector3 center = hit.collider.gameObject.GetComponent<Collider>().bounds.center;
+                        effect.transform.position = controller.ClosestPoint(center);
+                    }
+                    else
+                    {
+                        effect.transform.position = hit.point;
+                    }
                 }
             }
         }

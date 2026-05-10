@@ -110,6 +110,9 @@ public class RestPoint : MonoBehaviour, IInteractable
 
     public void PrepareArea()
     {
-        TransitionManager.Instance.InitState(transform.parent.gameObject);
+        if(TransitionManager.Instance != null)
+        {
+            TransitionManager.Instance.InitState(transform.parent.gameObject);
+        }
     }
 }
