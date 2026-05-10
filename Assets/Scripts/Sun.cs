@@ -6,11 +6,19 @@ public class Sun : MonoBehaviour
 
     public float distance = 100f;
 
+    public float DepthFull = 0f;
+
+    public float DepthVanish = -10f;
+
     private float baseIntensity = 1.0f;
+
+    private bool directionDown = true;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        directionDown = DepthVanish < DepthFull;
+
         if (SunLight != null)
         {
             baseIntensity = SunLight.GetComponent<Light>().intensity;
@@ -27,23 +35,48 @@ public class Sun : MonoBehaviour
             transform.position = targetTransform.position - SunLight.transform.forward * distance;
             transform.LookAt(targetTransform.position);
 
-            // Dim light below 0f
+            // Dim light within depth targets
             float depth = targetTransform.position.y;
-            if (depth < 0)
+            if((directionDown && depth > DepthFull) || (!directionDown && depth < DepthFull))
             {
-                if (depth <= -10)
-                {
-                    SunLight.GetComponent<Light>().intensity = 0f;
-                }
-                else
-                {
-                    SunLight.GetComponent<Light>().intensity = baseIntensity * ((10f + depth) / 10f);
-                }
+                Debug.Log("Full intensity");
+                SunLight.GetComponent<Light>().intensity = baseIntensity;
+            }
+            else if((directionDown && depth < DepthVanish) || (!directionDown && depth > DepthVanish))
+            {
+                Debug.Log("No Intensity");
+                SunLight.GetComponent<Light>().intensity = 0f;
             }
             else
             {
-                SunLight.GetComponent<Light>().intensity = baseIntensity;
+                if(directionDown)
+                {
+                    float progress = (depth - DepthVanish) / Mathf.Abs(DepthFull - DepthVanish);
+                    SunLight.GetComponent<Light>().intensity = baseIntensity * progress;
+                }
+                else
+                {
+                    float progress = 1.0f - ((depth - DepthFull) / Mathf.Abs(DepthVanish - DepthFull));
+                    Debug.Log("Intensity: " + progress);
+                    SunLight.GetComponent<Light>().intensity = baseIntensity * progress;
+                }
             }
+
+            //if (depth < 0)
+            //{
+            //    if (depth <= -DepthVanish)
+            //    {
+            //        SunLight.GetComponent<Light>().intensity = 0f;
+            //    }
+            //    else
+            //    {
+            //        SunLight.GetComponent<Light>().intensity = baseIntensity * ((10f + depth) / 10f);
+            //    }
+            //}
+            //else
+            //{
+            //    SunLight.GetComponent<Light>().intensity = baseIntensity;
+            //}
         }
     }
 }
