@@ -14,9 +14,30 @@ public class TransitionManager : MonoBehaviour
 
     public GameObject Transition2_3 = null;
 
+    public float SkyboxTransitionTime = 5f;
+
+    private float skyboxTimer = 0f;
+
+    public Material DefaultSkybox;
+
+    public Material Level3Skybox;
+
+    private Material TargetSkybox;
+
+    private float originAtmosphereThickness;
+
+    private Color originSkyTint;
+
+    private Color originGroundColor;
+
+    private float originExposure;
+
     void Start()
     {
         Instance = this;
+
+        // Copy skybox to prevent changing the original material
+        RenderSettings.skybox = new Material(RenderSettings.skybox);
 
         InitState();
     }
@@ -33,7 +54,10 @@ public class TransitionManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if(skyboxTimer > 0f)
+        {
+            UpdateSkybox();
+        }
     }
 
     public void PerformTransition(TransitionType transition)
@@ -44,7 +68,8 @@ public class TransitionManager : MonoBehaviour
             case TransitionType.Level2Threshhold: EventLevel2Threshhold(); return;
             case TransitionType.Level3Threshhold: EventLevel3Threshhold(); return;
             case TransitionType.Transition1_2: EventTransition1_2(); return;
-            case TransitionType.Transition2_3: EventTransition2_3(); return;
+            case TransitionType.Transition2_3_Inner: EventTransition2_3_Inner(); return;
+            case TransitionType.Transition2_3_Outer: EventTransition2_3_Outer(); return;
         }
     }
 
@@ -75,6 +100,24 @@ public class TransitionManager : MonoBehaviour
         if (Transition2_3 != null) Transition2_3.SetActive(true);
     }
 
+    public void EventTransition2_3_Inner()
+    {
+        EventTransition2_3();
+        StartSkyboxTransition(DefaultSkybox);
+        
+        //RenderSettings.skybox = DefaultSkybox;
+        //DynamicGI.UpdateEnvironment();
+    }
+
+    public void EventTransition2_3_Outer()
+    {
+        EventTransition2_3();
+        StartSkyboxTransition(Level3Skybox);
+        
+        //RenderSettings.skybox = Level3Skybox;
+        //DynamicGI.UpdateEnvironment();
+    }
+
     public void EventTransition2_3()
     {
         if (Level1 != null) Level1.SetActive(false);
@@ -92,6 +135,44 @@ public class TransitionManager : MonoBehaviour
         if (Transition1_2 != null) Transition1_2.SetActive(false);
         if (Transition2_3 != null) Transition2_3.SetActive(true);
     }
+
+    void StartSkyboxTransition(Material skybox)
+    {
+        TargetSkybox = skybox;
+        skyboxTimer = SkyboxTransitionTime;
+
+        originAtmosphereThickness = RenderSettings.skybox.GetFloat("_AtmosphereThickness");
+        originSkyTint = RenderSettings.skybox.GetColor("_SkyTint");
+        originGroundColor = RenderSettings.skybox.GetColor("_GroundColor");
+        originExposure = RenderSettings.skybox.GetFloat("_Exposure");
+}
+
+    void UpdateSkybox()
+    {
+        float progress = (SkyboxTransitionTime - skyboxTimer) / SkyboxTransitionTime;
+
+        float atmosphereThickness = Mathf.Lerp(originAtmosphereThickness, TargetSkybox.GetFloat("_AtmosphereThickness"), progress);
+        Color skyTint = Color.Lerp(originSkyTint, TargetSkybox.GetColor("_SkyTint"), progress);
+        Color groundColor = Color.Lerp(originGroundColor, TargetSkybox.GetColor("_GroundColor"), progress);
+        float exposure = Mathf.Lerp(originExposure, TargetSkybox.GetFloat("_Exposure"), progress);
+
+        RenderSettings.skybox.SetFloat("_AtmosphereThickness", atmosphereThickness);
+        RenderSettings.skybox.SetColor("_SkyTint", skyTint);
+        RenderSettings.skybox.SetColor("_GroundColor", groundColor);
+        RenderSettings.skybox.SetFloat("_Exposure", exposure);
+
+        DynamicGI.UpdateEnvironment();
+
+        if(skyboxTimer <= 0) return;
+        skyboxTimer -= Time.deltaTime;
+
+        // Finish off the transition
+        if(skyboxTimer <= 0)
+        {
+            skyboxTimer = 0f;
+            UpdateSkybox();
+        }
+    }
 }
 
 public enum TransitionType
@@ -100,5 +181,6 @@ public enum TransitionType
     Level2Threshhold,
     Level3Threshhold,
     Transition1_2,
-    Transition2_3
+    Transition2_3_Inner,
+    Transition2_3_Outer,
 }
