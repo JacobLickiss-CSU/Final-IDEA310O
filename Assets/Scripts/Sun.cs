@@ -39,12 +39,10 @@ public class Sun : MonoBehaviour
             float depth = targetTransform.position.y;
             if((directionDown && depth > DepthFull) || (!directionDown && depth < DepthFull))
             {
-                Debug.Log("Full intensity");
                 SunLight.GetComponent<Light>().intensity = baseIntensity;
             }
             else if((directionDown && depth < DepthVanish) || (!directionDown && depth > DepthVanish))
             {
-                Debug.Log("No Intensity");
                 SunLight.GetComponent<Light>().intensity = 0f;
             }
             else
@@ -57,26 +55,9 @@ public class Sun : MonoBehaviour
                 else
                 {
                     float progress = 1.0f - ((depth - DepthFull) / Mathf.Abs(DepthVanish - DepthFull));
-                    Debug.Log("Intensity: " + progress);
                     SunLight.GetComponent<Light>().intensity = baseIntensity * progress;
                 }
             }
-
-            //if (depth < 0)
-            //{
-            //    if (depth <= -DepthVanish)
-            //    {
-            //        SunLight.GetComponent<Light>().intensity = 0f;
-            //    }
-            //    else
-            //    {
-            //        SunLight.GetComponent<Light>().intensity = baseIntensity * ((10f + depth) / 10f);
-            //    }
-            //}
-            //else
-            //{
-            //    SunLight.GetComponent<Light>().intensity = baseIntensity;
-            //}
         }
     }
 }

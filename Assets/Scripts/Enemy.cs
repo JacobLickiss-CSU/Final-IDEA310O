@@ -101,6 +101,16 @@ public class Enemy : MonoBehaviour, IReset
 
     public GameObject HitEffect;
 
+    public SoundPlayer FootstepSound;
+
+    public SoundPlayer SwingSound;
+
+    public SoundPlayer HitSound;
+
+    public SoundPlayer DieSound;
+
+    public SoundPlayer StaggerSound;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -391,6 +401,8 @@ public class Enemy : MonoBehaviour, IReset
                 }
             }
         }
+
+        PlaySound(HitSound);
     }
 
     void TakeDamage(int damage)
@@ -409,6 +421,7 @@ public class Enemy : MonoBehaviour, IReset
     {
         State = EnemyState.Dead;
         GetComponent<CharacterController>().enabled = false;
+        PlaySound(DieSound);
         CrossFadeIfExists(DieAnimationName, 0.1f);
     }
 
@@ -422,6 +435,7 @@ public class Enemy : MonoBehaviour, IReset
         State = EnemyState.Stagger;
         staggerTimer = 0;
         agent.isStopped = true;
+        PlaySound(StaggerSound);
         CrossFadeIfExists(HitAnimationName, 0.1f);
     }
 
@@ -514,6 +528,21 @@ public class Enemy : MonoBehaviour, IReset
         {
             Debug.Log("Cannot play animation " + animationName);
         }
+    }
+
+    void PlaySound(SoundPlayer player)
+    {
+        if (player != null) Instantiate(player.gameObject);
+    }
+
+    public void EventFootstep()
+    {
+        PlaySound(FootstepSound);
+    }
+
+    public void EventAttackSwing()
+    {
+        PlaySound(SwingSound);
     }
 }
 

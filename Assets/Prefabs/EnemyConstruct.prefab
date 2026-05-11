@@ -243,6 +243,11 @@ MonoBehaviour:
   attackMoveStart: 1.933333
   attackMoveEnd: 2.308333
   HitEffect: {fileID: 1747636559562972692, guid: ce9a6e1ad4d1ddf46845e91cc447d586, type: 3}
+  FootstepSound: {fileID: 8984663617908626158, guid: 637ff062d0126cc4a902dae3824a96e9, type: 3}
+  SwingSound: {fileID: 8984663617908626158, guid: db2331f572ae63d42acfb8d7625f8a8f, type: 3}
+  HitSound: {fileID: 8984663617908626158, guid: caaf4514d4311c54e9b36af97200b845, type: 3}
+  DieSound: {fileID: 8984663617908626158, guid: 9394c60a06b737f45bfee755bb295a56, type: 3}
+  StaggerSound: {fileID: 8984663617908626158, guid: 766fd5d3cb1e92e4bb63e637435fb8f9, type: 3}
 --- !u!195 &4112258323114665051
 NavMeshAgent:
   m_ObjectHideFlags: 0

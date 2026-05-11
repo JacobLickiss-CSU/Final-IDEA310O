@@ -210,6 +210,11 @@ MonoBehaviour:
   attackMoveStart: 1
   attackMoveEnd: 1
   HitEffect: {fileID: 1747636559562972692, guid: ce9a6e1ad4d1ddf46845e91cc447d586, type: 3}
+  FootstepSound: {fileID: 8984663617908626158, guid: 58ab6554caff2aa49ac64d558986335f, type: 3}
+  SwingSound: {fileID: 8984663617908626158, guid: 799b5c346c8c4f14cae8bc6d53739699, type: 3}
+  HitSound: {fileID: 8984663617908626158, guid: e9998fecba953e846bac1a576a421c50, type: 3}
+  DieSound: {fileID: 8984663617908626158, guid: b8f4fe2159b044b4db238ab6b677062e, type: 3}
+  StaggerSound: {fileID: 8984663617908626158, guid: 15ab2c0e126b3b749bbcbac9f6947c85, type: 3}
 --- !u!195 &7989790984115315307
 NavMeshAgent:
   m_ObjectHideFlags: 0

@@ -249,6 +249,24 @@ public class PlayerManager : MonoBehaviour
 
     public GameObject HitEffect;
 
+    public SoundPlayer FootstepSound;
+
+    public SoundPlayer HealSound;
+
+    public SoundPlayer SwingSound;
+
+    public SoundPlayer HitSound;
+
+    public SoundPlayer RestSound;
+
+    public SoundPlayer DieSound;
+
+    public SoundPlayer RollSound;
+
+    public SoundPlayer BlockSound;
+
+    public SoundPlayer StaggerSound;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -543,6 +561,7 @@ public class PlayerManager : MonoBehaviour
         State = PlayerState.Rolling;
         LookTowardsFacing(true, true);
         modelAnimator.speed = 1.5f;
+        PlaySound(RollSound);
         modelAnimator.CrossFade(Animator.StringToHash("RobogirlArmature|Roll"), 0.2f);
     }
 
@@ -821,6 +840,7 @@ public class PlayerManager : MonoBehaviour
         State = PlayerState.BlockingAttack;
         enemy.NeutralizeAttack();
         blockingAttackTimer = 0f;
+        PlaySound(BlockSound);
         modelAnimator.Play(Animator.StringToHash("RobogirlArmature|BlockHit"));
     }
 
@@ -877,7 +897,6 @@ public class PlayerManager : MonoBehaviour
             {
                 Stagger(attacker);
             }
-            // TODO play hit effect
         }
     }
 
@@ -912,6 +931,8 @@ public class PlayerManager : MonoBehaviour
                 }
             }
         }
+
+        PlayAttackConnectSound();
     }
 
     void TakeDamage(int damage)
@@ -953,6 +974,7 @@ public class PlayerManager : MonoBehaviour
         InterruptHealing(PlayerState.Dead);
         InterruptResting(PlayerState.Dead);
         State = PlayerState.Dead;
+        PlaySound(DieSound);
         modelAnimator.CrossFade(Animator.StringToHash("RobogirlArmature|Die"), 0.2f);
     }
 
@@ -1036,6 +1058,7 @@ public class PlayerManager : MonoBehaviour
         State = PlayerState.Stagger;
         SetStaggerDirection(attacker);
         staggerTimer = 0;
+        PlaySound(StaggerSound);
         modelAnimator.CrossFade(Animator.StringToHash("RobogirlArmature|Hit"), 0.2f);
     }
 
@@ -1151,8 +1174,10 @@ public class PlayerManager : MonoBehaviour
     {
         if (State == PlayerState.Healing)
         {
+            PlaySound(HealSound);
+
             DataManager.Instance.CurrentHeals -= 1;
-            DataManager.Instance.CurrentHealth += DataManager.Instance.HealAmount; // TODO gradual health changes
+            DataManager.Instance.CurrentHealth += DataManager.Instance.HealAmount;
 
             if (DataManager.Instance.CurrentHealth > DataManager.Instance.MaxHealth)
             {
@@ -1189,6 +1214,7 @@ public class PlayerManager : MonoBehaviour
 
     public void EventStartReseting()
     {
+        PlaySound(RestSound);
         ResetWorld();
         SetRespawn(restAttemptPoint);
     }
@@ -1217,6 +1243,26 @@ public class PlayerManager : MonoBehaviour
     void SetRespawn(RestPoint point)
     {
         DataManager.Instance.SetRespawn(point);
+    }
+
+    void PlaySound(SoundPlayer player)
+    {
+        if (player != null) Instantiate(player.gameObject);
+    }
+
+    public void PlayFootstepSound()
+    {
+        PlaySound(FootstepSound);
+    }
+
+    public void PlayAttackSwingSound()
+    {
+        PlaySound(SwingSound);
+    }
+
+    public void PlayAttackConnectSound()
+    {
+        PlaySound(HitSound);
     }
 }
 

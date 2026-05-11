@@ -38,4 +38,14 @@ public class PlayerAnimationEvents : MonoBehaviour
     {
         PlayerManager.Instance.EventGameOver();
     }
+
+    public void EventFootstep()
+    {
+        PlayerManager.Instance.PlayFootstepSound();
+    }
+
+    public void EventAttackSwing()
+    {
+        PlayerManager.Instance.PlayAttackSwingSound();
+    }
 }

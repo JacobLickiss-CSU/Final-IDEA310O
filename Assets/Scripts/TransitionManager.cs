@@ -80,6 +80,7 @@ public class TransitionManager : MonoBehaviour
         if (Level3 != null) Level3.SetActive(false);
         if (Transition1_2 != null) Transition1_2.SetActive(true);
         if (Transition2_3 != null) Transition2_3.SetActive(false);
+        MusicManager.Instance.StartLevelMusic(1);
     }
 
     public void EventTransition1_2()
@@ -89,6 +90,7 @@ public class TransitionManager : MonoBehaviour
         if (Level3 != null) Level3.SetActive(false);
         if (Transition1_2 != null) Transition1_2.SetActive(true);
         if (Transition2_3 != null) Transition2_3.SetActive(false);
+        MusicManager.Instance.StartLevelMusic(0);
     }
 
     public void EventLevel2Threshhold()
@@ -98,6 +100,7 @@ public class TransitionManager : MonoBehaviour
         if (Level3 != null) Level3.SetActive(false);
         if (Transition1_2 != null) Transition1_2.SetActive(true);
         if (Transition2_3 != null) Transition2_3.SetActive(true);
+        MusicManager.Instance.StartLevelMusic(2);
     }
 
     public void EventTransition2_3_Inner()
@@ -125,6 +128,7 @@ public class TransitionManager : MonoBehaviour
         if (Level3 != null) Level3.SetActive(true);
         if (Transition1_2 != null) Transition1_2.SetActive(false);
         if (Transition2_3 != null) Transition2_3.SetActive(true);
+        MusicManager.Instance.StartLevelMusic(0);
     }
 
     public void EventLevel3Threshhold()
@@ -134,6 +138,7 @@ public class TransitionManager : MonoBehaviour
         if (Level3 != null) Level3.SetActive(true);
         if (Transition1_2 != null) Transition1_2.SetActive(false);
         if (Transition2_3 != null) Transition2_3.SetActive(true);
+        MusicManager.Instance.StartLevelMusic(3);
     }
 
     void StartSkyboxTransition(Material skybox)

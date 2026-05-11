@@ -5,3 +5,31 @@ Decaydence
 -- https://kenney.nl/
 
 Input Prompts - https://kenney.nl/assets/input-prompts
+Footsteps concrete - impact sounds
+Footsteps grass - impact sounds
+Footsteps wood - impact sounds
+Impact Mining - impact sounds
+Impact Plate Heavy - impact sounds
+Impact Plate Medium - impact sounds
+Impact Plate Light - impact sounds
+Impact Wood Heavy - impact sounds
+Select_003 - Select_005 - interface sounds
+forceField_000 - forceField_005 - sci-fi sounds
+Zap1 - Zap2 - digital audio
+Cloth2 - Cloth4 - RPG audio
+Woosh1 - Woosh8 - foley audio
+StoneHit1 - StoneHit5 - foley audio
+
+-- Dark Fantasy Studio - Forever and a day (Nicolas Jeudy) -- https://darkfantasystudio.itch.io/forever-and-a-day
+
+Dark Fantasy Studio - Your eyes on me
+Dark Fantasy Studio - Blind eyes can see
+Dark Fantasy Studio - I've lost my world
+Dark Fantasy Studio - And then their was silence
+
+-- Freesound - https://freesound.org
+
+Quick woosh - https://freesound.org/people/florianreichelt/sounds/683101/
+Woosh 1 - https://freesound.org/people/gulfstreamav/sounds/842510/
+Woosh 2 - https://freesound.org/people/gulfstreamav/sounds/842511/
+Whoosh 1 - https://freesound.org/people/sound.variant/sounds/807304/
