@@ -681,6 +681,8 @@ MonoBehaviour:
   GameOverHold: 2.5
   RespawnEffectTime: 1
   HitEffect: {fileID: 1747636559562972692, guid: ce9a6e1ad4d1ddf46845e91cc447d586, type: 3}
+  HealEffect: {fileID: 1747636559562972692, guid: b9b0d876f1d032d4582a9dcbdd7aa358, type: 3}
+  HealEffectLocation: {fileID: 7053603493609918068}
   FootstepSound: {fileID: 8984663617908626158, guid: 9fb747296bdec59489e253e7a6d8c0ba, type: 3}
   HealSound: {fileID: 8984663617908626158, guid: 18e6d1251f0a74847bbb4428e3fb22b6, type: 3}
   SwingSound: {fileID: 8984663617908626158, guid: 5c91f289e8db3ce41be5addb48cabea7, type: 3}
@@ -1295,6 +1297,11 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.001, y: 0.020469956, z: 0.001}
   m_Center: {x: 0.000000001662496, y: 0.0076651163, z: -0.000000003335963}
+--- !u!1 &7053603493609918068 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: -6982336735596267735, guid: f0779076f964e594684dfc794389bbfc, type: 3}
+  m_PrefabInstance: {fileID: 9149817710527215965}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &8231392007390512140 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: f0779076f964e594684dfc794389bbfc, type: 3}

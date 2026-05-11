@@ -436,7 +436,7 @@ public class Enemy : MonoBehaviour, IReset
         staggerTimer = 0;
         agent.isStopped = true;
         PlaySound(StaggerSound);
-        CrossFadeIfExists(HitAnimationName, 0.1f);
+        CrossFadeIfExists(HitAnimationName, 0.1f, true);
     }
 
     void HandleStaggering()
@@ -520,7 +520,14 @@ public class Enemy : MonoBehaviour, IReset
             int currentState = modelAnimator.GetCurrentAnimatorStateInfo(0).shortNameHash;
             if((targetState != currentState && targetState != nextState) || force)
             {
-                modelAnimator.CrossFade(targetState, normalizedTransitionDuration);
+                if(currentState == targetState)
+                {
+                    modelAnimator.Play(targetState, 0, 0f);
+                }
+                else
+                {
+                    modelAnimator.CrossFade(targetState, normalizedTransitionDuration);
+                }
             }
             //modelAnimator.Play(targetState, 0, normalizedTransitionDuration);
         }

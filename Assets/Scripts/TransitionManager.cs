@@ -81,6 +81,7 @@ public class TransitionManager : MonoBehaviour
         if (Transition1_2 != null) Transition1_2.SetActive(true);
         if (Transition2_3 != null) Transition2_3.SetActive(false);
         MusicManager.Instance.StartLevelMusic(1);
+        InstantSkyboxTransition(DefaultSkybox);
     }
 
     public void EventTransition1_2()
@@ -101,6 +102,7 @@ public class TransitionManager : MonoBehaviour
         if (Transition1_2 != null) Transition1_2.SetActive(true);
         if (Transition2_3 != null) Transition2_3.SetActive(true);
         MusicManager.Instance.StartLevelMusic(2);
+        InstantSkyboxTransition(DefaultSkybox);
     }
 
     public void EventTransition2_3_Inner()
@@ -139,6 +141,7 @@ public class TransitionManager : MonoBehaviour
         if (Transition1_2 != null) Transition1_2.SetActive(false);
         if (Transition2_3 != null) Transition2_3.SetActive(true);
         MusicManager.Instance.StartLevelMusic(3);
+        InstantSkyboxTransition(Level3Skybox);
     }
 
     void StartSkyboxTransition(Material skybox)
@@ -150,7 +153,17 @@ public class TransitionManager : MonoBehaviour
         originSkyTint = RenderSettings.skybox.GetColor("_SkyTint");
         originGroundColor = RenderSettings.skybox.GetColor("_GroundColor");
         originExposure = RenderSettings.skybox.GetFloat("_Exposure");
-}
+    }
+
+    void InstantSkyboxTransition(Material skybox)
+    {
+        TargetSkybox = skybox;
+
+        RenderSettings.skybox.SetFloat("_AtmosphereThickness", skybox.GetFloat("_AtmosphereThickness"));
+        RenderSettings.skybox.SetColor("_SkyTint", skybox.GetColor("_SkyTint"));
+        RenderSettings.skybox.SetColor("_GroundColor", skybox.GetColor("_GroundColor"));
+        RenderSettings.skybox.SetFloat("_Exposure", skybox.GetFloat("_Exposure"));
+    }
 
     void UpdateSkybox()
     {

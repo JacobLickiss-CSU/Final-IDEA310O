@@ -249,6 +249,10 @@ public class PlayerManager : MonoBehaviour
 
     public GameObject HitEffect;
 
+    public GameObject HealEffect;
+
+    public GameObject HealEffectLocation;
+
     public SoundPlayer FootstepSound;
 
     public SoundPlayer HealSound;
@@ -340,6 +344,8 @@ public class PlayerManager : MonoBehaviour
         {
             if(Camera.IsTargetLocked)
             {
+                sprintTime = 0;
+
                 if (sprintAction.triggered && sprintAction.IsPressed())
                 {
                     if(HasStamina(RollStaminaCost))
@@ -636,7 +642,7 @@ public class PlayerManager : MonoBehaviour
 
     public bool CanMove()
     {
-        return State == PlayerState.Ready || IsAttackHolding;
+        return (State == PlayerState.Ready || IsAttackHolding) && (Time.timeScale > 0f);
     }
 
     void HandleAttacking()
@@ -1206,6 +1212,7 @@ public class PlayerManager : MonoBehaviour
         if (State == PlayerState.Healing)
         {
             PlaySound(HealSound);
+            PlayHealEffect();
 
             DataManager.Instance.CurrentHeals -= 1;
             DataManager.Instance.CurrentHealth += DataManager.Instance.HealAmount;
@@ -1215,6 +1222,12 @@ public class PlayerManager : MonoBehaviour
                 DataManager.Instance.CurrentHealth = DataManager.Instance.MaxHealth;
             }
         }
+    }
+
+    public void PlayHealEffect()
+    {
+        GameObject effect = Instantiate(HealEffect);
+        effect.transform.position = HealEffectLocation.transform.position;
     }
 
     public void EventFinishHealing()
