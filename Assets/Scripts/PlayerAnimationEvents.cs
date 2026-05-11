@@ -48,4 +48,9 @@ public class PlayerAnimationEvents : MonoBehaviour
     {
         PlayerManager.Instance.PlayAttackSwingSound();
     }
+
+    public void EventEndingJump()
+    {
+        PlayerManager.Instance.EventEndingJump();
+    }
 }

@@ -8,6 +8,8 @@ TagManager:
   - PlayerWeapon
   - EnemyWeapon
   - InvisibleWall
+  - Ending
+  - TextTrigger
   layers:
   - Default
   - TransparentFX

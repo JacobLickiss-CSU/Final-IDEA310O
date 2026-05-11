@@ -51,6 +51,10 @@ public class CameraManager : MonoBehaviour
         }
     }
 
+    public GameObject EndingTransform;
+
+    public float EndingMoveSpeed = 2.0f;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -66,17 +70,24 @@ public class CameraManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(CanLook() && !IsTargetLocked)
+        if(!InEnding())
         {
-            ManageInput();
+            if (CanLook() && !IsTargetLocked)
+            {
+                ManageInput();
+            }
+
+            MoveToTarget();
+
+            CheckSwitchLock();
+            CheckLock();
+            UseLock();
+            UpdateLockEffect();
         }
-
-        MoveToTarget();
-
-        CheckSwitchLock();
-        CheckLock();
-        UseLock();
-        UpdateLockEffect();
+        else
+        {
+            ContinueEnding();
+        }
     }
 
     bool CanLook()
@@ -119,7 +130,7 @@ public class CameraManager : MonoBehaviour
         RaycastHit hit;
         if (Physics.Raycast(CameraPivot.transform.position, cameraDirection, out hit, cameraDirection.magnitude))
         {
-            if (hit.collider.gameObject.tag != "Player" && hit.collider.gameObject.tag != "Enemy" && hit.collider.gameObject.tag != "PlayerWeapon" && hit.collider.gameObject.tag != "InvisibleWall")
+            if (hit.collider.gameObject.tag != "Player" && hit.collider.gameObject.tag != "Enemy" && hit.collider.gameObject.tag != "PlayerWeapon" && hit.collider.gameObject.tag != "InvisibleWall" && hit.collider.gameObject.tag != "Ending" && hit.collider.gameObject.tag != "TextTrigger")
             {
                 transform.position = hit.point - cameraDirection * CollisionSpaceBack;
             }
@@ -144,14 +155,14 @@ public class CameraManager : MonoBehaviour
         RaycastHit hit;
         if (Physics.Raycast(transform.position, right, out hit, CollisionSpaceSides))
         {
-            if (hit.collider.gameObject.tag != "Player" && hit.collider.gameObject.tag != "Enemy" && hit.collider.gameObject.tag != "PlayerWeapon" && hit.collider.gameObject.tag != "InvisibleWall")
+            if (hit.collider.gameObject.tag != "Player" && hit.collider.gameObject.tag != "Enemy" && hit.collider.gameObject.tag != "PlayerWeapon" && hit.collider.gameObject.tag != "InvisibleWall" && hit.collider.gameObject.tag != "Ending" && hit.collider.gameObject.tag != "TextTrigger")
             {
                 transform.position = hit.point - right * CollisionSpaceSides;
             }
         }
         if (Physics.Raycast(transform.position, left, out hit, CollisionSpaceSides))
         {
-            if (hit.collider.gameObject.tag != "Player" && hit.collider.gameObject.tag != "Enemy" && hit.collider.gameObject.tag != "PlayerWeapon" && hit.collider.gameObject.tag != "InvisibleWall")
+            if (hit.collider.gameObject.tag != "Player" && hit.collider.gameObject.tag != "Enemy" && hit.collider.gameObject.tag != "PlayerWeapon" && hit.collider.gameObject.tag != "InvisibleWall" && hit.collider.gameObject.tag != "Ending" && hit.collider.gameObject.tag != "TextTrigger")
             {
                 transform.position = hit.point - left * CollisionSpaceSides;
             }
@@ -353,5 +364,19 @@ public class CameraManager : MonoBehaviour
         {
             LockEffect?.Hide();
         }
+    }
+
+    bool InEnding()
+    {
+        return PlayerManager.Instance.State == PlayerState.Ending;
+    }
+
+    void ContinueEnding()
+    {
+        // Lerp towards ending camera position
+        EndingTransform.transform.parent = null;
+        transform.position = Vector3.Lerp(transform.position, EndingTransform.transform.position, EndingMoveSpeed * Time.deltaTime);
+        transform.rotation = Quaternion.Lerp(transform.rotation, EndingTransform.transform.rotation, EndingMoveSpeed * Time.deltaTime);
+        transform.position = new Vector3(transform.position.x, EndingTransform.transform.position.y, transform.position.z);
     }
 }

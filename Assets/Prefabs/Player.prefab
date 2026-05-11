@@ -32,6 +32,37 @@ Transform:
   - {fileID: 2718588272930909588}
   m_Father: {fileID: 4400388933590775846}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &5588209729808460893
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7357863718344862660}
+  m_Layer: 0
+  m_Name: EndingCamera
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7357863718344862660
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5588209729808460893}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: -1.709}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 282310632843725101}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &6055724640165196374
 GameObject:
   m_ObjectHideFlags: 0
@@ -94,6 +125,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6503904195188698873}
+  - {fileID: 7357863718344862660}
   m_Father: {fileID: 2718588272930909588}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &7252571139810576013
@@ -404,6 +436,8 @@ MonoBehaviour:
   LockLookSpeed: 10
   LockJoystickSensitivity: 0.5
   LockMouseSensitivity: 8
+  EndingTransform: {fileID: 5588209729808460893}
+  EndingMoveSpeed: 2
 --- !u!1 &8252912510282395986
 GameObject:
   m_ObjectHideFlags: 0
@@ -656,6 +690,13 @@ MonoBehaviour:
   RollSound: {fileID: 8984663617908626158, guid: 5b05d2a0296d4714cb22518a6afc70bd, type: 3}
   BlockSound: {fileID: 8984663617908626158, guid: ed88c86c8382f75479369270e4c5fdf4, type: 3}
   StaggerSound: {fileID: 8984663617908626158, guid: f0a1dfa20c93a9742b2891cd4179ae94, type: 3}
+  TextWarning: {fileID: 8984663617908626158, guid: bd4e22c6ee004274f84e0d6f2f2c26fe, type: 3}
+  EndingJumpSpeed: 1
+  EndingTarget: {fileID: 0}
+  EndingFadeDelay: 1
+  EndingFadeTime: 3
+  EndingMessageTime: 4
+  EndingCutTime: 10
 --- !u!143 &7856368613324904279
 CharacterController:
   m_ObjectHideFlags: 0

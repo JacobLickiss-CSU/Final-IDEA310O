@@ -17,17 +17,17 @@ public class PlayerInterface : MonoBehaviour
 
     public TextMeshProUGUI GameOverText;
 
+    public TextMeshProUGUI EndingText;
+
+    public UnityEngine.UI.Image WarningMessageBack;
+
+    public TextMeshProUGUI WarningMessageText;
+
     public UIDocument MainHUD;
 
     public GameMenuManager MenuManager;
 
     private InputAction menuAction;
-
-    private Dictionary<VisualElement, Color> baseColors = new Dictionary<VisualElement, Color>();
-
-    private Dictionary<VisualElement, Color> baseBackgroundColors = new Dictionary<VisualElement, Color>();
-
-    private Dictionary<VisualElement, Color> baseTints = new Dictionary<VisualElement, Color>();
 
     private IInteractable interactable = null;
 
@@ -40,6 +40,12 @@ public class PlayerInterface : MonoBehaviour
     public Texture Heal_Keyboard;
 
     public Texture Heal_Gamepad;
+
+    public float WarningMessageTime = 4f;
+
+    public float WarningMessageFade = 1f;
+
+    private float warningMessageTimer = 0f;
 
     public bool IsMenuOpen
     {
@@ -54,25 +60,7 @@ public class PlayerInterface : MonoBehaviour
     {
         Instance = this;
 
-        SaveColors();
-
         menuAction = InputSystem.actions.FindAction("Menu");
-    }
-
-    void SaveColors()
-    {
-        if (MainHUD != null)
-        {
-            MainHUD.rootVisualElement.Query<VisualElement>().ForEach(element =>
-            {
-                StyleColor baseColor = element.resolvedStyle.color;
-                StyleColor baseBackgroundColor = element.resolvedStyle.backgroundColor;
-                StyleColor baseTint = element.resolvedStyle.unityBackgroundImageTintColor;
-                baseColors.Add(element, new Color(baseColor.value.r, baseColor.value.g, baseColor.value.b, baseColor.value.a));
-                baseBackgroundColors.Add(element, new Color(baseBackgroundColor.value.r, baseBackgroundColor.value.g, baseBackgroundColor.value.b, baseBackgroundColor.value.a));
-                baseTints.Add(element, new Color(baseTint.value.r, baseTint.value.g, baseTint.value.b, baseTint.value.a));
-            });
-        }
     }
 
     // Update is called once per frame
@@ -113,6 +101,8 @@ public class PlayerInterface : MonoBehaviour
 
             UpdateInputPrompt();
         }
+
+        ContinueWarningMessage();
     }
 
     public void SetGameOverProgress(float progress, bool showText = true)
@@ -130,16 +120,20 @@ public class PlayerInterface : MonoBehaviour
 
         if (MainHUD != null)
         {
-            MainHUD.rootVisualElement.Query<VisualElement>().ForEach(element =>
-            {
-                Color baseColor = baseColors[element];
-                Color baseBackgroundColor = baseBackgroundColors[element];
-                Color baseTint = baseTints[element];
-                element.style.color = new Color(baseColor.r, baseColor.g, baseColor.b, baseColor.a * (1f - progress));
-                element.style.backgroundColor = new Color(baseBackgroundColor.r, baseBackgroundColor.g, baseBackgroundColor.b, baseBackgroundColor.a * (1f - progress));
-                element.style.unityBackgroundImageTintColor = new Color(baseTint.r, baseTint.g, baseTint.b, baseTint.a * (1f - progress));
-            });
+            SetHudHiding(progress);
         }
+    }
+
+    void SetHudHiding(float progress)
+    {
+        MainHUD.rootVisualElement.Query<VisualElement>().ForEach(element =>
+        {
+            element.style.opacity = 1f - progress;
+        });
+        MainHUD.rootVisualElement.Query<UnityEngine.UIElements.Image>().ForEach(element =>
+        {
+            element.style.opacity = 1f - progress;
+        });
     }
 
     void SetRenderTextureDimensions()
@@ -253,5 +247,50 @@ public class PlayerInterface : MonoBehaviour
         }
     }
 
-    
+    public void ShowWarningMessage()
+    {
+        warningMessageTimer = WarningMessageTime + (WarningMessageFade * 2);
+    }
+
+    void ContinueWarningMessage()
+    {
+        if(warningMessageTimer > 0)
+        {
+            warningMessageTimer -= Time.deltaTime;
+            if(warningMessageTimer < 0 ) warningMessageTimer = 0;
+
+            float progress = 0f;
+            if(warningMessageTimer > WarningMessageTime + WarningMessageFade)
+            {
+                progress = 1f - ((warningMessageTimer - (WarningMessageTime + WarningMessageFade)) / WarningMessageFade);
+            }
+            else if(warningMessageTimer > WarningMessageFade)
+            {
+                progress = 1f;
+            }
+            else
+            {
+                progress = warningMessageTimer / WarningMessageFade;
+            }
+
+            WarningMessageBack.color = new Color(0f, 0f, 0f, progress);
+            WarningMessageText.color = new Color(WarningMessageText.color.r, WarningMessageText.color.g, WarningMessageText.color.b, progress);
+        }
+    }
+
+    public void SetEndingFade(float progress)
+    {
+        float realProgress = Mathf.Min(progress, 1.0f);
+
+        GameOverFilter.color = new Color(0f, 0f, 0f, realProgress);
+        SetHudHiding(realProgress);
+    }
+
+    public void ShowEndingMessage(float progress)
+    {
+        float realProgress = Mathf.Min(progress, 1.0f);
+
+        EndingText.color = new Color(EndingText.color.r, EndingText.color.g, EndingText.color.b, realProgress);
+    }
+
 }

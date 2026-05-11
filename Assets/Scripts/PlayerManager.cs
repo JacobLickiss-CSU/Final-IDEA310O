@@ -267,6 +267,24 @@ public class PlayerManager : MonoBehaviour
 
     public SoundPlayer StaggerSound;
 
+    public SoundPlayer TextWarning;
+
+    private bool endingJumped = false;
+
+    public float EndingJumpSpeed = 1f;
+
+    public GameObject EndingTarget;
+
+    public float EndingFadeDelay = 1f;
+
+    public float EndingFadeTime = 3f;
+
+    public float EndingMessageTime = 4f;
+
+    public float EndingCutTime = 10f;
+
+    private float endingFadeTimer = 0f;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -308,6 +326,7 @@ public class PlayerManager : MonoBehaviour
         HandleHealing();
         ContinueGameOver();
         ContinueRespawn();
+        ContinueEnding();
 
         if (State == PlayerState.Rolling)
         {
@@ -870,6 +889,18 @@ public class PlayerManager : MonoBehaviour
         {
             overlappingWeapons.Add(collider.gameObject.GetComponent<EnemyWeapon>().Enemy);
         }
+
+        if(collider.tag == "Ending")
+        {
+            TriggerEnding(collider);
+        }
+
+        if(collider.tag == "TextTrigger")
+        {
+            PlayerInterface.Instance.ShowWarningMessage();
+            Destroy(collider.gameObject);
+            PlaySound(TextWarning);
+        }
     }
 
     void OnTriggerExit(Collider collider)
@@ -1264,6 +1295,60 @@ public class PlayerManager : MonoBehaviour
     {
         PlaySound(HitSound);
     }
+
+    public void TriggerEnding(Collider collider)
+    {
+        State = PlayerState.Ending;
+        modelAnimator.CrossFade(Animator.StringToHash("RobogirlArmature|Leap"), 0.2f);
+    }
+
+    public void EventEndingJump()
+    {
+        endingJumped = true;
+    }
+
+    public void ContinueEnding()
+    {
+        if(endingJumped)
+        {
+            Vector3 target = EndingTarget.transform.position;
+            Vector2 targetHorizontal = new Vector2(target.x, target.z);
+
+            Vector2 currentHorizontal = new Vector2(transform.position.x, transform.position.z);
+            Vector2 newHorizontal = Vector2.Lerp(currentHorizontal, targetHorizontal, EndingJumpSpeed * Time.deltaTime);
+
+            GetComponent<CharacterController>().enabled = false;
+            transform.position = new Vector3(newHorizontal.x, transform.position.y, newHorizontal.y);
+            GetComponent<CharacterController>().enabled = true;
+
+            endingFadeTimer += Time.deltaTime;
+            if(endingFadeTimer >= EndingFadeDelay)
+            {
+                PlayerInterface.Instance.SetEndingFade((endingFadeTimer - EndingFadeDelay) / EndingFadeTime);
+            }
+            if(endingFadeTimer >= EndingMessageTime)
+            {
+                PlayerInterface.Instance.ShowEndingMessage((endingFadeTimer - EndingMessageTime));
+            }
+            if(endingFadeTimer >= EndingCutTime)
+            {
+                MainMenu();
+            }
+        }
+    }
+
+    // TODO refactor to share with GameMenuManager
+    public void MainMenu()
+    {
+        // Unpause time
+        Time.timeScale = 1.0f;
+
+        // Hide the cursor
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+
+        DataManager.Instance.LoadMenu();
+    }
 }
 
 public enum PlayerState
@@ -1278,7 +1363,8 @@ public enum PlayerState
     Resting,
     Falling,
     Dead,
-    Frozen
+    Frozen,
+    Ending
 }
 
 public enum MovementMode
