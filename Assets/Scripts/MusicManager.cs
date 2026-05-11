@@ -59,6 +59,7 @@ public class MusicManager : MonoBehaviour
 
     void SwitchMusic(AudioClip clip, float startTime)
     {
+        if (gameObject == null) return;
         if (player.clip == clip) return;
 
         if(player.isPlaying)
