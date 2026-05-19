@@ -289,6 +289,8 @@ public class PlayerManager : MonoBehaviour
 
     private float endingFadeTimer = 0f;
 
+    private DoorOpen openAttemptDoor = null;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -930,7 +932,7 @@ public class PlayerManager : MonoBehaviour
 
         if (State != PlayerState.Dead)
         {
-            if (DataManager.Instance.CurrentPoise <= 0 || forceStagger)
+            if (DataManager.Instance.CurrentPoise <= 0 || forceStagger || State == PlayerState.Opening)
             {
                 Stagger(attacker);
             }
@@ -1010,6 +1012,7 @@ public class PlayerManager : MonoBehaviour
     {
         InterruptHealing(PlayerState.Dead);
         InterruptResting(PlayerState.Dead);
+        InterruptOpening(PlayerState.Dead);
         State = PlayerState.Dead;
         PlaySound(DieSound);
         modelAnimator.CrossFade(Animator.StringToHash("RobogirlArmature|Die"), 0.2f);
@@ -1092,6 +1095,7 @@ public class PlayerManager : MonoBehaviour
     {
         InterruptHealing(PlayerState.Stagger);
         InterruptResting(PlayerState.Stagger);
+        InterruptOpening(PlayerState.Stagger);
         State = PlayerState.Stagger;
         SetStaggerDirection(attacker);
         staggerTimer = 0;
@@ -1289,6 +1293,45 @@ public class PlayerManager : MonoBehaviour
         DataManager.Instance.SetRespawn(point);
     }
 
+    public void StartOpen(DoorOpen opener)
+    {
+        State = PlayerState.Opening;
+        openAttemptDoor = opener;
+
+        GetComponent<CharacterController>().enabled = false; // See https://discussions.unity.com/t/teleporting-character-issue-with-transform-position-in-unity-2018-3/221631/4
+        transform.position = opener.gameObject.transform.position;
+        GetComponent<CharacterController>().enabled = true;
+        FacePosition(opener.DoorFacing.transform.position);
+
+        PlayOpenAnimation();
+    }
+
+    void PlayOpenAnimation()
+    {
+        modelAnimator.CrossFade(Animator.StringToHash("RobogirlArmature|OpenDoor"), 0.2f);
+    }
+
+    void InterruptOpening(PlayerState resultState = PlayerState.Ready)
+    {
+        State = resultState;
+        openAttemptDoor?.PlayInterrupt();
+        openAttemptDoor = null;
+    }
+
+    public void EventOpenFully()
+    {
+        if (State != PlayerState.Opening) return;
+
+        openAttemptDoor?.SetOpen();
+        openAttemptDoor = null;
+    }
+
+    public void EventFinishOpen()
+    {
+        State = PlayerState.Ready;
+        openAttemptDoor = null;
+    }
+
     void PlaySound(SoundPlayer player)
     {
         if (player != null) Instantiate(player.gameObject);
@@ -1377,7 +1420,8 @@ public enum PlayerState
     Falling,
     Dead,
     Frozen,
-    Ending
+    Ending,
+    Opening
 }
 
 public enum MovementMode

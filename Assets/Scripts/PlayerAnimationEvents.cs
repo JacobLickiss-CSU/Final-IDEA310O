@@ -53,4 +53,14 @@ public class PlayerAnimationEvents : MonoBehaviour
     {
         PlayerManager.Instance.EventEndingJump();
     }
+
+    public void EventOpenFully()
+    {
+        PlayerManager.Instance.EventOpenFully();
+    }
+
+    public void EventFinishOpen()
+    {
+        PlayerManager.Instance.EventFinishOpen();
+    }
 }
