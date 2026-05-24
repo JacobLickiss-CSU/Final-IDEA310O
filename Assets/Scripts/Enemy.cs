@@ -29,13 +29,13 @@ public class Enemy : MonoBehaviour, IReset
 
     public float StaggerTime = 2f;
 
-    private float staggerTimer = 0f;
+    protected float staggerTimer = 0f;
 
     public EnemyState State { get; set; }
 
-    private bool weaponTouching = false;
+    protected bool weaponTouching = false;
 
-    private long lastHitId;
+    protected long lastHitId;
 
     public float AwarenessDistance = 10f;
 
@@ -43,7 +43,7 @@ public class Enemy : MonoBehaviour, IReset
 
     public float ForgetDistance = 50f;
 
-    private Vector3 homePosition;
+    protected Vector3 homePosition;
 
     public bool AwareThroughObstacles = false;
 
@@ -53,7 +53,7 @@ public class Enemy : MonoBehaviour, IReset
 
     public float PersonalSpace = 1f;
 
-    UnityEngine.AI.NavMeshAgent agent;
+    protected UnityEngine.AI.NavMeshAgent agent;
 
     public float EngageTurnSpeed = 180f;
 
@@ -63,8 +63,8 @@ public class Enemy : MonoBehaviour, IReset
 
     public int AttackDamage = 15;
 
-    private float attackTimer = 0f;
-    private bool attackNeutralized = false;
+    protected float attackTimer = 0f;
+    protected bool attackNeutralized = false;
     public bool IsAttackActive
     {
         get
@@ -95,9 +95,9 @@ public class Enemy : MonoBehaviour, IReset
 
     public float attackMoveEnd = 59f / 24f;
 
-    private Vector3 resetPosition;
+    protected Vector3 resetPosition;
 
-    private Quaternion resetRotation;
+    protected Quaternion resetRotation;
 
     public GameObject HitEffect;
 
@@ -122,7 +122,7 @@ public class Enemy : MonoBehaviour, IReset
         DataManager.Instance.RegisterReset(this);
     }
 
-    void PrepareAnimationStates()
+    protected void PrepareAnimationStates()
     {
 
     }
@@ -172,7 +172,7 @@ public class Enemy : MonoBehaviour, IReset
         ContinueAttacking();
     }
 
-    void HandleAwareness()
+    protected void HandleAwareness()
     {
         if (PlayerManager.Instance != null && PlayerManager.Instance.State != PlayerState.Dead)
         {
@@ -200,7 +200,7 @@ public class Enemy : MonoBehaviour, IReset
         }
     }
 
-    bool CanSeePlayer(bool needLOS = true)
+    protected bool CanSeePlayer(bool needLOS = true)
     {
         if (PlayerManager.Instance == null) return false;
 
@@ -231,7 +231,7 @@ public class Enemy : MonoBehaviour, IReset
         return false;
     }
 
-    void ChasePlayer()
+    protected void ChasePlayer()
     {
         if(State == EnemyState.Ready)
         {
@@ -268,7 +268,7 @@ public class Enemy : MonoBehaviour, IReset
         }
     }
 
-    void EngagePlayer()
+    protected void EngagePlayer()
     {
         Vector3 playerPos = PlayerManager.Instance.transform.position;
 
@@ -287,7 +287,7 @@ public class Enemy : MonoBehaviour, IReset
         ConsiderAttack();
     }
 
-    void LookTowardsPlayer()
+    protected void LookTowardsPlayer()
     {
         Quaternion currentFacing = transform.rotation;
         transform.LookAt(PlayerManager.Instance.transform);
@@ -296,7 +296,7 @@ public class Enemy : MonoBehaviour, IReset
         transform.eulerAngles = new Vector3(0, transform.eulerAngles.y, 0);
     }
 
-    void ConsiderAttack()
+    protected void ConsiderAttack()
     {
         if(PlayerAngle() <= MaxAttackAngle)
         {
@@ -304,7 +304,7 @@ public class Enemy : MonoBehaviour, IReset
         }
     }
 
-    float PlayerAngle()
+    protected float PlayerAngle()
     {
         Vector3 playerDirection = PlayerManager.Instance.transform.position - transform.position;
         Vector2 playerFlatDirection = new Vector2(playerDirection.x, playerDirection.z);
@@ -314,7 +314,7 @@ public class Enemy : MonoBehaviour, IReset
         return Vector3.Angle(forwardDirection, playerFlatDirection);
     }
 
-    void RegainPoise()
+    protected void RegainPoise()
     {
         CurrentPoise += PoiseRegen * Time.deltaTime;
 
@@ -344,7 +344,7 @@ public class Enemy : MonoBehaviour, IReset
         return TargetFocus.transform;
     }
 
-    void OnTriggerEnter(Collider collider)
+    protected void OnTriggerEnter(Collider collider)
     {
         if (collider.tag == "PlayerWeapon")
         {
@@ -352,7 +352,7 @@ public class Enemy : MonoBehaviour, IReset
         }
     }
 
-    void OnTriggerExit(Collider collider)
+    protected void OnTriggerExit(Collider collider)
     {
         if (collider.tag == "PlayerWeapon")
         {
@@ -360,7 +360,7 @@ public class Enemy : MonoBehaviour, IReset
         }
     }
 
-    void GetHit(PlayerManager attacker)
+    protected void GetHit(PlayerManager attacker)
     {
         TakeDamage(attacker.AttackDamage);
         PlayHitEffect();
@@ -374,7 +374,7 @@ public class Enemy : MonoBehaviour, IReset
         }
     }
 
-    void PlayHitEffect()
+    protected void PlayHitEffect()
     {
         CharacterController controller = GetComponent<CharacterController>();
 
@@ -405,7 +405,7 @@ public class Enemy : MonoBehaviour, IReset
         PlaySound(HitSound);
     }
 
-    void TakeDamage(int damage)
+    protected void TakeDamage(int damage)
     {
         CurrentHealth -= damage;
         CurrentPoise -= damage;
@@ -417,7 +417,7 @@ public class Enemy : MonoBehaviour, IReset
         }
     }
 
-    void Die()
+    protected void Die()
     {
         State = EnemyState.Dead;
         GetComponent<CharacterController>().enabled = false;
@@ -425,7 +425,7 @@ public class Enemy : MonoBehaviour, IReset
         CrossFadeIfExists(DieAnimationName, 0.1f);
     }
 
-    void Stagger()
+    protected void Stagger()
     {
         if(State == EnemyState.Attacking)
         {
@@ -439,7 +439,7 @@ public class Enemy : MonoBehaviour, IReset
         CrossFadeIfExists(HitAnimationName, 0.1f, true);
     }
 
-    void HandleStaggering()
+    protected void HandleStaggering()
     {
         if (State == EnemyState.Stagger)
         {
@@ -455,7 +455,7 @@ public class Enemy : MonoBehaviour, IReset
         }
     }
 
-    void StartAttack()
+    protected void StartAttack()
     {
         State = EnemyState.Attacking;
         attackNeutralized = false;
@@ -464,7 +464,7 @@ public class Enemy : MonoBehaviour, IReset
         CrossFadeIfExists(AttackAnimationName, 0.1f, true);
     }
 
-    void ContinueAttacking()
+    protected void ContinueAttacking()
     {
         if(State == EnemyState.Attacking)
         {
@@ -486,13 +486,13 @@ public class Enemy : MonoBehaviour, IReset
         }
     }
 
-    void StaggerAttack()
+    protected void StaggerAttack()
     {
         attackTimer = 0;
         agent.isStopped = false;
     }
 
-    void StopAttacking(EnemyState endState = EnemyState.Ready)
+    protected void StopAttacking(EnemyState endState = EnemyState.Ready)
     {
         attackTimer = 0;
         State = endState;
@@ -506,7 +506,7 @@ public class Enemy : MonoBehaviour, IReset
         attackNeutralized = true;
     }
 
-    void CrossFadeIfExists(string animationName, float normalizedTransitionDuration, bool force = false)
+    protected void CrossFadeIfExists(string animationName, float normalizedTransitionDuration, bool force = false)
     {
         int targetState = Animator.StringToHash(animationName);
         if(modelAnimator.HasState(0, targetState))
@@ -537,7 +537,7 @@ public class Enemy : MonoBehaviour, IReset
         }
     }
 
-    void PlaySound(SoundPlayer player)
+    protected void PlaySound(SoundPlayer player)
     {
         if (player != null) Instantiate(player.gameObject);
     }
@@ -558,5 +558,7 @@ public enum EnemyState
     Ready,
     Stagger,
     Attacking,
-    Dead
+    Dead,
+    Waiting,
+    Intro
 }

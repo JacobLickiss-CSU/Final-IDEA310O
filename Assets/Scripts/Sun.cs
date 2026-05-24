@@ -28,7 +28,7 @@ public class Sun : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Transform targetTransform = PlayerManager.Instance != null ? PlayerManager.Instance.transform : Camera.main.transform;
+        Transform targetTransform = Camera.main.transform;
 
         if(SunLight != null)
         {

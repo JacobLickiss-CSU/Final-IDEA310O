@@ -70,7 +70,15 @@ public class CameraManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(!InEnding())
+        if(InEnding())
+        {
+            ContinueEnding();
+        }
+        else if(InCutscene())
+        {
+            ContinueCutscene();
+        }
+        else
         {
             if (CanLook() && !IsTargetLocked)
             {
@@ -83,10 +91,6 @@ public class CameraManager : MonoBehaviour
             CheckLock();
             UseLock();
             UpdateLockEffect();
-        }
-        else
-        {
-            ContinueEnding();
         }
     }
 
@@ -371,6 +375,11 @@ public class CameraManager : MonoBehaviour
         return PlayerManager.Instance.State == PlayerState.Ending;
     }
 
+    bool InCutscene()
+    {
+        return PlayerManager.Instance.State == PlayerState.Cutscene;
+    }
+
     void ContinueEnding()
     {
         // Lerp towards ending camera position
@@ -378,5 +387,10 @@ public class CameraManager : MonoBehaviour
         transform.position = Vector3.Lerp(transform.position, EndingTransform.transform.position, EndingMoveSpeed * Time.deltaTime);
         transform.rotation = Quaternion.Lerp(transform.rotation, EndingTransform.transform.rotation, EndingMoveSpeed * Time.deltaTime);
         transform.position = new Vector3(transform.position.x, EndingTransform.transform.position.y, transform.position.z);
+    }
+
+    void ContinueCutscene()
+    {
+        
     }
 }

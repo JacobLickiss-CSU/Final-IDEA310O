@@ -1352,6 +1352,17 @@ public class PlayerManager : MonoBehaviour
         PlaySound(HitSound);
     }
 
+    public void TriggerBossCutscene()
+    {
+        State = PlayerState.Cutscene;
+        modelAnimator.CrossFade(Animator.StringToHash("RobogirlArmature|Idle"), 0.2f);
+    }
+
+    public void EndBossCutscene()
+    {
+        State = PlayerState.Ready;
+    }
+
     public void TriggerEnding(Collider collider)
     {
         State = PlayerState.Ending;
@@ -1421,7 +1432,8 @@ public enum PlayerState
     Dead,
     Frozen,
     Ending,
-    Opening
+    Opening,
+    Cutscene
 }
 
 public enum MovementMode

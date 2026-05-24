@@ -17,7 +17,8 @@ public class Spinning : MonoBehaviour
     {
         if(DoLocal)
         {
-            transform.localEulerAngles += (Time.deltaTime * Speed);
+            transform.Rotate(Speed * Time.deltaTime, Space.Self);
+            //transform.localEulerAngles += (Time.deltaTime * Speed);
         }
         else
         {
