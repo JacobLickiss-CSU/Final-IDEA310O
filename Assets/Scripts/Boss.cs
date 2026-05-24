@@ -53,6 +53,10 @@ public class Boss : Enemy
 
     public float FallSpeed = 1f;
 
+    bool isTracking = false;
+
+    bool deathLeaping = false;
+
     private System.Random random = new System.Random();
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -87,6 +91,8 @@ public class Boss : Enemy
             GetComponent<CharacterController>().enabled = true;
             currentAttack = -1;
             currentAttackTime = -1f;
+            attackShakeLevel = 0f;
+            deathLeaping = false;
         }
     }
 
@@ -112,10 +118,9 @@ public class Boss : Enemy
 
         HandleAwareness();
 
-        // TODO boss attack behaviors
+        // Boss attack behaviors
         HandleAttacking();
-        //ChasePlayer();
-        //ContinueAttacking();
+        HandleDeathLeaping();
     }
 
     new void HandleAwareness()
@@ -207,8 +212,9 @@ public class Boss : Enemy
             case BossAttack.None:
                 {
                     CrossFadeIfExists(IdleAnimationName, 0.2f);
+                    StartTracking();
 
-                    if(currentAttackTime >= NoneAttackTime)
+                    if (currentAttackTime >= NoneAttackTime)
                     {
                         FinishAttacking();
                     }
@@ -253,12 +259,18 @@ public class Boss : Enemy
                 }
             default: break;
         }
+
+        if(isTracking)
+        {
+            LookTowardsPlayer();
+        }
     }
 
     public void FinishAttacking()
     {
         currentAttackTime = -1f;
         StopShake();
+        StopTracking();
     }
 
     void InterruptAttacking()
@@ -266,6 +278,7 @@ public class Boss : Enemy
         FinishAttacking();
         StopJumping();
         StopLanding();
+        StopTracking();
     }
 
     BossAttack GetNextAttack()
@@ -405,6 +418,29 @@ public class Boss : Enemy
         }
 
         isLanding = false;
+    }
+
+    public void StartTracking()
+    {
+        isTracking = true;
+    }
+
+    public void StopTracking()
+    {
+        isTracking = false;
+    }
+
+    public void DeathLeap()
+    {
+        deathLeaping = true;
+    }
+
+    void HandleDeathLeaping()
+    {
+        if(State == EnemyState.Dead && deathLeaping)
+        {
+            transform.Translate(new Vector3(0, 30f, 0) * Time.deltaTime, Space.World);
+        }
     }
 }
 
