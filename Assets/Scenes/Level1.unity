@@ -789,7 +789,7 @@ Transform:
   m_GameObject: {fileID: 55363591}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 5.917, y: 1.237, z: -0.20178}
+  m_LocalPosition: {x: 5.996, y: 1.153, z: -0.202}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -4680,7 +4680,7 @@ Transform:
   m_GameObject: {fileID: 349726058}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 6.451, y: 1.239, z: -0.202}
+  m_LocalPosition: {x: 6.36, y: 1.131, z: -0.202}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -16893,6 +16893,37 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 3601049459746512367, guid: af59290e23077534aa9db272322e3fa0, type: 3}
   m_PrefabInstance: {fileID: 985139152}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &458311645
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 458311646}
+  m_Layer: 0
+  m_Name: TargetFocus
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &458311646
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 458311645}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.67, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8227879174377857214}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &460082670
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -21774,7 +21805,7 @@ Transform:
   m_GameObject: {fileID: 827181767}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 6.473, y: 0.585, z: -0.202}
+  m_LocalPosition: {x: 6.322, y: 0.657, z: -0.202}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -31391,7 +31422,7 @@ Transform:
   m_GameObject: {fileID: 1525362356}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 5.926, y: 0.563, z: -0.202}
+  m_LocalPosition: {x: 6.017, y: 0.661, z: -0.202}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -39301,6 +39332,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 6360445901437514785, guid: 3dfafcf6b5b05c04f91ee28eddc87cbe, type: 3}
       insertIndex: -1
       addedObject: {fileID: 93548691}
+    - targetCorrespondingSourceObject: {fileID: 6360445901437514785, guid: 3dfafcf6b5b05c04f91ee28eddc87cbe, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 458311646}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 5985010631893708443, guid: 3dfafcf6b5b05c04f91ee28eddc87cbe, type: 3}
       insertIndex: -1
@@ -39338,18 +39372,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a4cc253250291f47bf74b9965356de6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Boss
-  TargetFocus: {fileID: 8227879174377857210}
+  TargetFocus: {fileID: 458311645}
   modelAnimator: {fileID: 8227879174377857209}
   IdleAnimationName: EnemyBossArmature|Idle
   WalkAnimationName: EnemyBossArmature|Walk
   AttackAnimationName: EnemyBossArmature|Attack
   HitAnimationName: EnemyBossArmature|Hit
   DieAnimationName: EnemyBossArmature|Die
-  MaxHealth: 50
-  CurrentHealth: 50
-  MaxPoise: 10
-  CurrentPoise: 10
-  PoiseRegen: 5
+  MaxHealth: 500
+  CurrentHealth: 500
+  MaxPoise: 100
+  CurrentPoise: 100
+  PoiseRegen: 25
   StaggerTime: 2
   AwarenessDistance: 10
   AwarenessOffset: 5
@@ -39394,14 +39428,13 @@ MonoBehaviour:
   - {fileID: 1525362357}
   JumpSpeed: 2
   FallSpeed: 1.7
+  ForwardAttack: {fileID: 4353204776882058208, guid: bc691b97f822ccc4d962f7ed67a2f02f, type: 3}
+  AroundAttack: {fileID: 4353204776882058208, guid: c5d3e98534d0b6f46b78917b7a61dbcb, type: 3}
+  AirAttack: {fileID: 4353204776882058208, guid: 09a87c788b6ba51479ff7578fd5b3ff7, type: 3}
+  AirAttackDistance: 25
 --- !u!95 &8227879174377857209 stripped
 Animator:
   m_CorrespondingSourceObject: {fileID: 5041564059475001270, guid: 3dfafcf6b5b05c04f91ee28eddc87cbe, type: 3}
-  m_PrefabInstance: {fileID: 8227879174377857206}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &8227879174377857210 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 5697560791982412171, guid: 3dfafcf6b5b05c04f91ee28eddc87cbe, type: 3}
   m_PrefabInstance: {fileID: 8227879174377857206}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &8227879174377857211 stripped

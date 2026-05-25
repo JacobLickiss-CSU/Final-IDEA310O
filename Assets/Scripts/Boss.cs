@@ -1,7 +1,7 @@
 using UnityEngine;
 using System;
 
-public class Boss : Enemy
+public class Boss : Enemy, IReset
 {
     public string InactiveAnimationName = "|Inactive";
 
@@ -57,7 +57,23 @@ public class Boss : Enemy
 
     bool deathLeaping = false;
 
+    public GameObject ForwardAttack;
+
+    public GameObject AroundAttack;
+
+    public GameObject AirAttack;
+
+    public float AirAttackDistance = 15f;
+
     private System.Random random = new System.Random();
+
+    new public bool IsAttackActive
+    {
+        get
+        {
+            return State == EnemyState.Attacking && !attackNeutralized;
+        }
+    }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -78,8 +94,8 @@ public class Boss : Enemy
             State = EnemyState.Waiting;
             transform.position = resetPosition;
             transform.rotation = resetRotation;
-            if (gameObject.activeInHierarchy) agent.destination = homePosition;
-            if (gameObject.activeInHierarchy) agent.isStopped = false;
+            //if (gameObject.activeInHierarchy) agent.destination = homePosition;
+            //if (gameObject.activeInHierarchy) agent.isStopped = false;
             CurrentHealth = MaxHealth;
             CurrentPoise = MaxPoise;
             IsAware = false;
@@ -309,7 +325,7 @@ public class Boss : Enemy
 
     void ContinueShake(bool force = false)
     {
-        if(attackShakeLevel > 0f || force)
+        if((attackShakeLevel > 0f || force) && Time.timeScale > 0f)
         {
             if(attackShakeReverse)
             {
@@ -440,6 +456,56 @@ public class Boss : Enemy
         if(State == EnemyState.Dead && deathLeaping)
         {
             transform.Translate(new Vector3(0, 30f, 0) * Time.deltaTime, Space.World);
+        }
+    }
+
+    public void ArmAttack()
+    {
+        attackNeutralized = false;
+    }
+
+    public void ExecuteForwardAttack()
+    {
+        GameObject attack = Instantiate(ForwardAttack);
+        attack.transform.position = transform.position;
+
+        SpikeSpawner spawner = attack.GetComponent<SpikeSpawner>();
+
+        spawner.Vector = new Vector3(transform.forward.x, -transform.forward.z, 0f);
+    }
+
+    public void ExecuteAroundAttack()
+    {
+        GameObject attack = Instantiate(AroundAttack);
+        attack.transform.position = transform.position;
+
+        SpikeSpawner spawner = attack.GetComponent<SpikeSpawner>();
+
+        spawner.Vector = new Vector3(transform.forward.x, -transform.forward.z, 0f);
+    }
+
+    public void ExecuteAirAttack()
+    {
+        Vector3 targetPosition = PlayerManager.Instance.gameObject.transform.position;
+
+        Vector3[] startPositions = new Vector3[] { 
+            targetPosition + new Vector3(AirAttackDistance, 0, AirAttackDistance),
+            targetPosition + new Vector3(-AirAttackDistance, 0, AirAttackDistance),
+            targetPosition + new Vector3(AirAttackDistance, 0, -AirAttackDistance),
+            targetPosition + new Vector3(-AirAttackDistance, 0, -AirAttackDistance),
+        };
+
+        for(int i=random.Next(4),icount=0; icount<3; i++, icount++)
+        {
+            Vector3 startPosition = startPositions[i % 4];
+            Vector3 direction = startPosition - targetPosition;
+
+            GameObject attack = Instantiate(AirAttack);
+            attack.transform.position = startPosition;
+
+            SpikeSpawner spawner = attack.GetComponent<SpikeSpawner>();
+
+            spawner.Vector = -direction;
         }
     }
 }

@@ -10,6 +10,7 @@ TagManager:
   - InvisibleWall
   - Ending
   - TextTrigger
+  - StandaloneAttack
   layers:
   - Default
   - TransparentFX

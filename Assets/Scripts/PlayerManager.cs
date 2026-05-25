@@ -898,7 +898,12 @@ public class PlayerManager : MonoBehaviour
             overlappingWeapons.Add(collider.gameObject.GetComponent<EnemyWeapon>().Enemy);
         }
 
-        if(collider.tag == "Ending")
+        if (collider.tag == "StandaloneAttack")
+        {
+            StandaloneHit(collider.gameObject.GetComponent<StandaloneAttack>());
+        }
+
+        if (collider.tag == "Ending")
         {
             TriggerEnding(collider);
         }
@@ -921,20 +926,31 @@ public class PlayerManager : MonoBehaviour
 
     void GetHit(Enemy attacker, bool forceStagger = false)
     {
-        if(State == PlayerState.Resting)
+        attacker.NeutralizeAttack();
+        EnactHit(attacker.AttackDamage, attacker.GetFocusPosition(), forceStagger);
+    }
+
+    void StandaloneHit(StandaloneAttack attack)
+    {
+        EnactHit(attack.Damage, attack.GetFocusPosition(), attack.ForceStagger);
+        attack.Connected();
+    }
+
+    void EnactHit(int damage, Vector3 source, bool forceStagger = false)
+    {
+        if (State == PlayerState.Resting)
         {
             forceStagger = true;
         }
 
-        TakeDamage(attacker.AttackDamage);
+        TakeDamage(damage);
         PlayHitEffect();
-        attacker.NeutralizeAttack();
 
         if (State != PlayerState.Dead)
         {
             if (DataManager.Instance.CurrentPoise <= 0 || forceStagger || State == PlayerState.Opening)
             {
-                Stagger(attacker);
+                Stagger(source);
             }
         }
     }
@@ -967,6 +983,20 @@ public class PlayerManager : MonoBehaviour
                     {
                         effect.transform.position = hit.point;
                     }
+                }
+            }
+
+            if (hit.collider.gameObject.tag == "StandaloneAttack")
+            {
+                GameObject effect = Instantiate(HitEffect);
+                if (hit.point.magnitude < .05f)
+                {
+                    Vector3 center = hit.collider.gameObject.GetComponent<Collider>().bounds.center;
+                    effect.transform.position = controller.ClosestPoint(center);
+                }
+                else
+                {
+                    effect.transform.position = hit.point;
                 }
             }
         }
@@ -1010,6 +1040,7 @@ public class PlayerManager : MonoBehaviour
 
     void Die()
     {
+        StopRoll(PlayerState.Dead);
         InterruptHealing(PlayerState.Dead);
         InterruptResting(PlayerState.Dead);
         InterruptOpening(PlayerState.Dead);
@@ -1091,21 +1122,22 @@ public class PlayerManager : MonoBehaviour
         return DataManager.Instance.GetRespawnPoint();
     }
 
-    void Stagger(Enemy attacker)
+    void Stagger(Vector3 source)
     {
+        StopRoll(PlayerState.Stagger);
         InterruptHealing(PlayerState.Stagger);
         InterruptResting(PlayerState.Stagger);
         InterruptOpening(PlayerState.Stagger);
         State = PlayerState.Stagger;
-        SetStaggerDirection(attacker);
+        SetStaggerDirection(source);
         staggerTimer = 0;
         PlaySound(StaggerSound);
         modelAnimator.CrossFade(Animator.StringToHash("RobogirlArmature|Hit"), 0.2f);
     }
 
-    void SetStaggerDirection(Enemy attacker)
+    void SetStaggerDirection(Vector3 source)
     {
-        FacePosition(attacker.GetFocusPosition());
+        FacePosition(source);
         staggerFacing = targetFacing;
     }
 
