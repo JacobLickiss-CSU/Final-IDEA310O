@@ -55,6 +55,13 @@ ModelImporter:
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
       events:
+      - time: 0.038451273
+        functionName: EventStartWeapon
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
       - time: 0.052380953
         functionName: EventAttackSwing
         data: 
@@ -85,6 +92,20 @@ ModelImporter:
         messageOptions: 0
       - time: 0.6095238
         functionName: EventFootstep
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: 0.9380952
+        functionName: EventEndWeapon
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: 1
+        functionName: AttackFinish
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0

@@ -63,37 +63,25 @@ public class Enemy : MonoBehaviour, IReset
 
     public int AttackDamage = 15;
 
-    protected float attackTimer = 0f;
-    protected bool attackNeutralized = false;
+    protected bool attackActive = false;
     public bool IsAttackActive
     {
         get
         {
-            return State == EnemyState.Attacking &&
-                attackTimer >= attackActiveStart && attackTimer <= attackActiveEnd && !attackNeutralized;
+            return State == EnemyState.Attacking && attackActive;
         }
     }
 
+    protected bool attackMoving = false;
     public bool IsAttackMoving
     {
         get
         {
-            return State == EnemyState.Attacking &&
-                attackTimer >= attackMoveStart && attackTimer <= attackMoveEnd;
+            return State == EnemyState.Attacking && attackMoving;
         }
     }
 
-    public float attackTime = 4f;
-
-    public float attackActiveStart = 49f / 24f;
-
-    public float attackActiveEnd = 62f / 24f;
-
     public float attackMoveSpeed = 2f;
-
-    public float attackMoveStart = 49f / 24f;
-
-    public float attackMoveEnd = 59f / 24f;
 
     protected Vector3 resetPosition;
 
@@ -142,8 +130,8 @@ public class Enemy : MonoBehaviour, IReset
             if (gameObject.activeInHierarchy) modelAnimator.Play(Animator.StringToHash(IdleAnimationName));
             staggerTimer = 0f;
             weaponTouching = false;
-            attackTimer = 0f;
-            attackNeutralized = false;
+            attackActive = false;
+            attackMoving = false;
             GetComponent<CharacterController>().enabled = true;
         }
     }
@@ -458,8 +446,8 @@ public class Enemy : MonoBehaviour, IReset
     protected void StartAttack()
     {
         State = EnemyState.Attacking;
-        attackNeutralized = false;
-        attackTimer = 0f;
+        attackActive = false;
+        attackMoving = false;
         agent.isStopped = true;
         CrossFadeIfExists(AttackAnimationName, 0.1f, true);
     }
@@ -468,33 +456,27 @@ public class Enemy : MonoBehaviour, IReset
     {
         if(State == EnemyState.Attacking)
         {
-            attackTimer += Time.deltaTime;
-
-            if (attackTimer >= attackTime)
+            if (IsAttackMoving)
             {
-                StopAttacking();
-            }
-            else
-            {
-                if (IsAttackMoving)
-                {
-                    Vector3 finalMove = transform.forward * attackMoveSpeed;
-                    finalMove.y += gravityValue;
-                    GetComponent<CharacterController>().Move(finalMove * Time.deltaTime);
-                }
+                Vector3 finalMove = transform.forward * attackMoveSpeed;
+                finalMove.y += gravityValue;
+                GetComponent<CharacterController>().Move(finalMove * Time.deltaTime);
             }
         }
     }
 
     protected void StaggerAttack()
     {
-        attackTimer = 0;
+        attackActive = false;
+        attackMoving = false;
         agent.isStopped = false;
+        State = EnemyState.Stagger;
     }
 
     protected void StopAttacking(EnemyState endState = EnemyState.Ready)
     {
-        attackTimer = 0;
+        attackActive = false;
+        attackMoving = false;
         State = endState;
         agent.isStopped = false;
         CrossFadeIfExists(IdleAnimationName, 0.1f);
@@ -503,7 +485,7 @@ public class Enemy : MonoBehaviour, IReset
     public void NeutralizeAttack()
     {
         // Keep using the attack animation, but make IsAttackActive false to prevent repeated hits
-        attackNeutralized = true;
+        attackActive = false;
     }
 
     protected void CrossFadeIfExists(string animationName, float normalizedTransitionDuration, bool force = false)
@@ -559,6 +541,31 @@ public class Enemy : MonoBehaviour, IReset
     public void EventAttackSwing()
     {
         PlaySound(SwingSound);
+    }
+
+    public void EventStartWeapon()
+    {
+        attackActive = true;
+    }
+
+    public void EventEndWeapon()
+    {
+        attackActive = false;
+    }
+
+    public void EventAttackMove()
+    {
+        attackMoving = true;
+    }
+
+    public void EventAttackHalt()
+    {
+        attackMoving = false;
+    }
+
+    public void AttackFinish()
+    {
+        StopAttacking();
     }
 }
 

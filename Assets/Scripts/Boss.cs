@@ -81,7 +81,7 @@ public class Boss : Enemy, IReset
     {
         get
         {
-            return State == EnemyState.Attacking && !attackNeutralized;
+            return State == EnemyState.Attacking && attackActive;
         }
     }
 
@@ -112,8 +112,8 @@ public class Boss : Enemy, IReset
             if (gameObject.activeInHierarchy) modelAnimator.Play(Animator.StringToHash(InactiveAnimationName));
             staggerTimer = 0f;
             weaponTouching = false;
-            attackTimer = 0f;
-            attackNeutralized = false;
+            attackActive = false;
+            attackMoving = false;
             GetComponent<CharacterController>().enabled = true;
             currentAttack = -1;
             currentAttackTime = -1f;
@@ -472,7 +472,7 @@ public class Boss : Enemy, IReset
 
     public void ArmAttack()
     {
-        attackNeutralized = false;
+        attackActive = true;
     }
 
     public void ExecuteForwardAttack()
