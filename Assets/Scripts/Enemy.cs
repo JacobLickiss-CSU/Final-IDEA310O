@@ -172,7 +172,7 @@ public class Enemy : MonoBehaviour, IReset
         ContinueAttacking();
     }
 
-    protected void HandleAwareness()
+    protected virtual void HandleAwareness()
     {
         if (PlayerManager.Instance != null && PlayerManager.Instance.State != PlayerState.Dead)
         {
@@ -360,7 +360,7 @@ public class Enemy : MonoBehaviour, IReset
         }
     }
 
-    protected void GetHit(PlayerManager attacker)
+    protected virtual void GetHit(PlayerManager attacker)
     {
         TakeDamage(attacker.AttackDamage);
         PlayHitEffect();
@@ -417,7 +417,7 @@ public class Enemy : MonoBehaviour, IReset
         }
     }
 
-    protected void Die()
+    protected virtual void Die()
     {
         State = EnemyState.Dead;
         GetComponent<CharacterController>().enabled = false;
@@ -464,7 +464,7 @@ public class Enemy : MonoBehaviour, IReset
         CrossFadeIfExists(AttackAnimationName, 0.1f, true);
     }
 
-    protected void ContinueAttacking()
+    protected virtual void ContinueAttacking()
     {
         if(State == EnemyState.Attacking)
         {
@@ -537,9 +537,18 @@ public class Enemy : MonoBehaviour, IReset
         }
     }
 
-    protected void PlaySound(SoundPlayer player)
+    protected void PlaySound(SoundPlayer player, bool follow = true)
     {
-        if (player != null) Instantiate(player.gameObject);
+        if (player == null) return;
+
+        if (follow)
+        {
+            Instantiate(player.gameObject, transform);
+        }
+        else
+        {
+            Instantiate(player.gameObject);
+        }
     }
 
     public void EventFootstep()

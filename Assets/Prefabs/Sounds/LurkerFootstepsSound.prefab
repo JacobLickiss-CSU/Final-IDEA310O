@@ -52,7 +52,7 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 512992565c1c66a47988857f1dd5d741, type: 3}
   - {fileID: 8300000, guid: 6f70f153110844141be753dba6be1106, type: 3}
   - {fileID: 8300000, guid: 09aa9775e6e6d2b4e857f821ccc39075, type: 3}
-  Volume: 0.1
+  Volume: 1
   Next: {fileID: 0}
   NextDelay: 0
 --- !u!82 &2469340446436736433
@@ -112,7 +112,7 @@ AudioSource:
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 0
+      value: 1
       inSlope: 0
       outSlope: 0
       tangentMode: 0

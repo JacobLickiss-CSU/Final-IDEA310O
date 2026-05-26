@@ -49,7 +49,7 @@ MonoBehaviour:
   Clips:
   - {fileID: 8300000, guid: d55a7c848473ec24f83fb1d636359f39, type: 3}
   - {fileID: 8300000, guid: f476ac8b87f2c3c4798b4678e2586e56, type: 3}
-  Volume: 0.5
+  Volume: 1
   Next: {fileID: 0}
   NextDelay: 0
 --- !u!82 &2469340446436736433
@@ -109,7 +109,7 @@ AudioSource:
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 0
+      value: 1
       inSlope: 0
       outSlope: 0
       tangentMode: 0

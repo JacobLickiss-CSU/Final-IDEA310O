@@ -48,7 +48,7 @@ MonoBehaviour:
   Source: {fileID: 2469340446436736433}
   Clips:
   - {fileID: 8300000, guid: eac27fd2d7966c040ad00e3497677077, type: 3}
-  Volume: 0.3
+  Volume: 1
   Next: {fileID: 0}
   NextDelay: 0
 --- !u!82 &2469340446436736433
@@ -108,7 +108,7 @@ AudioSource:
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 0
+      value: 1
       inSlope: 0
       outSlope: 0
       tangentMode: 0

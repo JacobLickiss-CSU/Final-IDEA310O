@@ -67,6 +67,16 @@ public class Boss : Enemy, IReset
 
     private System.Random random = new System.Random();
 
+    public SoundPlayer RockSound;
+
+    public SoundPlayer RockHitSound;
+
+    public SoundPlayer ChainsSound;
+
+    public SoundPlayer ChainsLongSound;
+
+    public SoundPlayer JumpSound;
+
     new public bool IsAttackActive
     {
         get
@@ -139,7 +149,7 @@ public class Boss : Enemy, IReset
         HandleDeathLeaping();
     }
 
-    new void HandleAwareness()
+    protected override void HandleAwareness()
     {
         if (State != EnemyState.Waiting && State != EnemyState.Intro && State != EnemyState.Dead)
         {
@@ -151,7 +161,7 @@ public class Boss : Enemy, IReset
         }
     }
 
-    new void GetHit(PlayerManager attacker)
+    protected override void GetHit(PlayerManager attacker)
     {
         TakeDamage(attacker.AttackDamage);
         PlayHitEffect();
@@ -190,11 +200,12 @@ public class Boss : Enemy, IReset
         CrossFadeIfExists(IdleAnimationName, 0.2f);
     }
 
-    new void Die()
+    protected override void Die()
     {
         base.Die();
 
         InterruptAttacking();
+        MusicManager.Instance.StartEndingMusic();
     }
 
     void HandleAttacking()
@@ -216,7 +227,7 @@ public class Boss : Enemy, IReset
         GetNextAttack();
     }
 
-    new void ContinueAttacking()
+    protected override void ContinueAttacking()
     {
         currentAttackTime += Time.deltaTime;
         ContinueShake();
@@ -507,6 +518,31 @@ public class Boss : Enemy, IReset
 
             spawner.Vector = -direction;
         }
+    }
+
+    public void EventSoundRock()
+    {
+        PlaySound(RockSound, true);
+    }
+
+    public void EventSoundRockHit()
+    {
+        PlaySound(RockHitSound, true);
+    }
+
+    public void EventSoundChains()
+    {
+        PlaySound(ChainsSound, true);
+    }
+
+    public void EventSoundChainsLong()
+    {
+        PlaySound(ChainsLongSound, true);
+    }
+
+    public void EventSoundJump()
+    {
+        PlaySound(JumpSound, true);
     }
 }
 

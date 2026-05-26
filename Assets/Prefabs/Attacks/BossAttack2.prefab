@@ -123,3 +123,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aa56922f066664142a6af2a4e23a9647, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Spike
+  GrowTime: 0.2
+  HoldTime: 2
+  ShrinkTime: 0.2
+  SizeMultiplier: 100
+  SpawnSound: {fileID: 8984663617908626158, guid: 80dd91da6db26694ca5ca9d4a225704d, type: 3}
+  VanishSound: {fileID: 8984663617908626158, guid: 80dd91da6db26694ca5ca9d4a225704d, type: 3}

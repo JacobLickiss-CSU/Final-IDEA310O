@@ -30,6 +30,14 @@ public class MusicManager : MonoBehaviour
 
     private float nextUpTime = 0f;
 
+    public AudioClip FinalBossMusic = null;
+
+    public float FinalBossMusicStartTime = 0f;
+
+    public AudioClip EndingMusic = null;
+
+    public float EndingMusicStartTime = 0f;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -55,6 +63,17 @@ public class MusicManager : MonoBehaviour
             case 3: SwitchMusic(Level3Music, Level3MusicStartTime); break;
             default: SwitchMusic(null, 0f); break;
         }
+    }
+
+    public void StartFinalBossMusic()
+    {
+        SwitchMusic(FinalBossMusic, FinalBossMusicStartTime);
+    }
+
+    public void StartEndingMusic()
+    {
+        DontDestroyOnLoad(gameObject);
+        SwitchMusic(EndingMusic, EndingMusicStartTime);
     }
 
     void SwitchMusic(AudioClip clip, float startTime)

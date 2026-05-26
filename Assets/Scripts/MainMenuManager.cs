@@ -3,6 +3,8 @@ using UnityEngine.EventSystems;
 
 public class MainMenuManager : MonoBehaviour
 {
+    public AudioSource MusicPlayer;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -11,6 +13,14 @@ public class MainMenuManager : MonoBehaviour
         {
             EventSystem.current.SetSelectedGameObject(null);
             EventSystem.current.SetSelectedGameObject(PlayButton);
+        }
+    }
+
+    void Awake()
+    {
+        if(MusicManager.Instance == null || MusicManager.Instance.gameObject == null)
+        {
+            MusicPlayer.Play();
         }
     }
 
@@ -32,6 +42,11 @@ public class MainMenuManager : MonoBehaviour
 
     public void StartGame()
     {
+        if(MusicManager.Instance != null && MusicManager.Instance.gameObject != null)
+        {
+            Destroy(MusicManager.Instance.gameObject);
+        }
+
         DataManager.Instance.LoadGame();
     }
 }

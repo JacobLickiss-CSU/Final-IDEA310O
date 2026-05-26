@@ -13,12 +13,16 @@ Impact Plate Heavy - impact sounds
 Impact Plate Medium - impact sounds
 Impact Plate Light - impact sounds
 Impact Wood Heavy - impact sounds
+Impact Glass Medium - impact sounds
+Impact Bell Heavy - impact sounds
 Select_003 - Select_005 - interface sounds
 forceField_000 - forceField_005 - sci-fi sounds
 Zap1 - Zap2 - digital audio
 Cloth2 - Cloth4 - RPG audio
 Woosh1 - Woosh8 - foley audio
 StoneHit1 - StoneHit5 - foley audio
+StoneDrag1 - StoneDrag4 - foley audio
+StoneDragHit1 - StoneDragHit3 - foley audio
 
 -- Dark Fantasy Studio - Forever and a day (Nicolas Jeudy) -- https://darkfantasystudio.itch.io/forever-and-a-day
 
@@ -27,6 +31,10 @@ Dark Fantasy Studio - Blind eyes can see
 Dark Fantasy Studio - I've lost my world
 Dark Fantasy Studio - And then their was silence
 
+-- Dark Fantasy Studio - Immortals (Nicolas Jeudy) -- https://darkfantasystudio.itch.io/immortals
+
+Dark Fantasy Studio - Warriors
+
 -- Freesound - https://freesound.org
 
 Quick woosh - https://freesound.org/people/florianreichelt/sounds/683101/
@@ -34,3 +42,4 @@ Woosh 1 - https://freesound.org/people/gulfstreamav/sounds/842510/
 Woosh 2 - https://freesound.org/people/gulfstreamav/sounds/842511/
 Whoosh 1 - https://freesound.org/people/sound.variant/sounds/807304/
 Chime 0001 - https://freesound.org/people/radian/sounds/62976/
+church_bell - https://freesound.org/people/sinewave1kHz/sounds/207355/

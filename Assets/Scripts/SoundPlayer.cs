@@ -44,7 +44,7 @@ public class SoundPlayer : MonoBehaviour
 
         Source.clip = ChooseClip();
         Source.volume = Volume;
-        Source.Play();
+        Source.PlayOneShot(Source.clip, Source.volume);
         didPlay = true;
     }
 

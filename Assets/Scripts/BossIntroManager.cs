@@ -67,6 +67,8 @@ public class BossIntroManager : MonoBehaviour, IReset
         CamStartPos = Camera.main.gameObject.transform.position;
         CamStartRot = Camera.main.gameObject.transform.rotation;
 
+        MusicManager.Instance.StartFinalBossMusic();
+
         inIntro = true;
     }
 
@@ -124,6 +126,6 @@ public class BossIntroManager : MonoBehaviour, IReset
 
     void PlaySound(SoundPlayer player)
     {
-        if (player != null) Instantiate(player.gameObject);
+        if (player != null) Instantiate(player.gameObject, transform);
     }
 }

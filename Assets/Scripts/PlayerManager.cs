@@ -1366,7 +1366,7 @@ public class PlayerManager : MonoBehaviour
 
     void PlaySound(SoundPlayer player)
     {
-        if (player != null) Instantiate(player.gameObject);
+        if (player != null) Instantiate(player.gameObject, transform);
     }
 
     public void PlayFootstepSound()

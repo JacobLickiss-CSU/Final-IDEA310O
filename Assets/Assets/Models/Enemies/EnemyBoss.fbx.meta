@@ -56,6 +56,13 @@ ModelImporter:
       curves: []
       events:
       - time: 0
+        functionName: ArmAttack
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: 0
         functionName: AttackShake
         data: 
         objectReferenceParameter: {instanceID: 0}
@@ -69,15 +76,8 @@ ModelImporter:
         floatParameter: 0.2
         intParameter: 0
         messageOptions: 0
-      - time: 0.9952381
-        functionName: FinishAttacking
-        data: 
-        objectReferenceParameter: {instanceID: 0}
-        floatParameter: 0
-        intParameter: 0
-        messageOptions: 0
-      - time: 0
-        functionName: ArmAttack
+      - time: 0.12625723
+        functionName: EventSoundRockHit
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
@@ -85,6 +85,34 @@ ModelImporter:
         messageOptions: 0
       - time: 0.30476192
         functionName: ExecuteAirAttack
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: 0.49879843
+        functionName: EventSoundRock
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: 0.9952381
+        functionName: FinishAttacking
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: 0.30952382
+        functionName: EventSoundChains
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: 0.70000005
+        functionName: EventSoundChains
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
@@ -119,13 +147,6 @@ ModelImporter:
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
       events:
-      - time: 0.9952381
-        functionName: FinishAttacking
-        data: 
-        objectReferenceParameter: {instanceID: 0}
-        floatParameter: 0
-        intParameter: 0
-        messageOptions: 0
       - time: 0
         functionName: AttackShake
         data: 
@@ -147,8 +168,29 @@ ModelImporter:
         floatParameter: 1.1
         intParameter: 0
         messageOptions: 0
+      - time: 0.24299066
+        functionName: EventSoundRockHit
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
       - time: 0.47142857
         functionName: ExecuteAroundAttack
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: 0.9952381
+        functionName: FinishAttacking
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: 0.46666667
+        functionName: EventSoundChains
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
@@ -219,20 +261,6 @@ ModelImporter:
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
       events:
-      - time: 0.9952381
-        functionName: FinishAttacking
-        data: 
-        objectReferenceParameter: {instanceID: 0}
-        floatParameter: 0
-        intParameter: 0
-        messageOptions: 0
-      - time: 0
-        functionName: AttackShake
-        data: 
-        objectReferenceParameter: {instanceID: 0}
-        floatParameter: 1.2
-        intParameter: 0
-        messageOptions: 0
       - time: 0
         functionName: StartTracking
         data: 
@@ -240,8 +268,8 @@ ModelImporter:
         floatParameter: 1.2
         intParameter: 0
         messageOptions: 0
-      - time: 0.45714286
-        functionName: StopTracking
+      - time: 0
+        functionName: AttackShake
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 1.2
@@ -254,8 +282,36 @@ ModelImporter:
         floatParameter: 1.2
         intParameter: 0
         messageOptions: 0
+      - time: 0.35514018
+        functionName: EventSoundRockHit
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: 0.45714286
+        functionName: StopTracking
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 1.2
+        intParameter: 0
+        messageOptions: 0
       - time: 0.5809524
         functionName: ExecuteForwardAttack
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: 0.9952381
+        functionName: FinishAttacking
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: 0.57142854
+        functionName: EventSoundChains
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
@@ -290,8 +346,57 @@ ModelImporter:
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
       events:
+      - time: 0.12763683
+        functionName: EventSoundRock
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: 0.16889185
+        functionName: EventSoundChains
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: 0.20952381
+        functionName: EventSoundRock
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: 0.3
+        functionName: EventSoundRock
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
       - time: 0.8785492
         functionName: DeathLeap
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: 0.23809522
+        functionName: EventSoundChains
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: 0.33333334
+        functionName: EventSoundChains
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: 0.87142855
+        functionName: EventSoundChains
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
@@ -390,7 +495,21 @@ ModelImporter:
       mirror: 0
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
-      events: []
+      events:
+      - time: 0.39448154
+        functionName: EventSoundChainsLong
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: 0.42906097
+        functionName: EventSoundRock
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
       transformMask: []
       maskType: 3
       maskSource: {instanceID: 0}
@@ -420,15 +539,36 @@ ModelImporter:
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
       events:
-      - time: 0.9904762
-        functionName: FinishAttacking
+      - time: 0
+        functionName: Land
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
-      - time: 0
-        functionName: Land
+      - time: 0.021940367
+        functionName: EventSoundJump
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: 0.56186026
+        functionName: EventSoundRock
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: 0.7714286
+        functionName: EventSoundChains
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: 0.9904762
+        functionName: FinishAttacking
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
@@ -479,6 +619,27 @@ ModelImporter:
         messageOptions: 0
       - time: 0.9952381
         functionName: FinishAttacking
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0.2
+        intParameter: 0
+        messageOptions: 0
+      - time: 0
+        functionName: EventSoundRockHit
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0.2
+        intParameter: 0
+        messageOptions: 0
+      - time: 0.4095238
+        functionName: EventSoundChains
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0.2
+        intParameter: 0
+        messageOptions: 0
+      - time: 0.32380953
+        functionName: EventSoundJump
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0.2
