@@ -55,7 +55,7 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 1f63620d0367a4b40981ef89938b6947, type: 3}
   - {fileID: 8300000, guid: 08214df18afadc14cb5ee4f3ee6c10d2, type: 3}
   - {fileID: 8300000, guid: 10ed15a754d5ad6409ea8e58faef13e7, type: 3}
-  Volume: 6
+  Volume: 4
   Next: {fileID: 0}
   NextDelay: 0
 --- !u!82 &2469340446436736433
