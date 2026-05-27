@@ -110,6 +110,8 @@ public class BossIntroManager : MonoBehaviour, IReset
     {
         PlayerManager.Instance.EndBossCutscene();
 
+        ShowHealthbar();
+
         inIntro = false;
     }
 
@@ -122,6 +124,12 @@ public class BossIntroManager : MonoBehaviour, IReset
             boss.PlayIntro();
             warningShown = true;
         }
+    }
+
+    void ShowHealthbar()
+    {
+        PlayerInterface.Instance.TrackedBoss = boss;
+        PlayerInterface.Instance.ShowBossHealth();
     }
 
     void PlaySound(SoundPlayer player)

@@ -119,6 +119,7 @@ public class Boss : Enemy, IReset
             currentAttackTime = -1f;
             attackShakeLevel = 0f;
             deathLeaping = false;
+            PlayerInterface.Instance.HideBossHealth();
         }
     }
 
@@ -205,6 +206,7 @@ public class Boss : Enemy, IReset
         base.Die();
 
         InterruptAttacking();
+        PlayerInterface.Instance.HideBossHealth();
         MusicManager.Instance.StartEndingMusic();
     }
 

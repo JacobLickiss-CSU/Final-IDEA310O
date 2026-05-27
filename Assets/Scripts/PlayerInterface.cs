@@ -47,6 +47,8 @@ public class PlayerInterface : MonoBehaviour
 
     private float warningMessageTimer = 0f;
 
+    public Boss TrackedBoss = null;
+
     public bool IsMenuOpen
     {
         get
@@ -103,6 +105,8 @@ public class PlayerInterface : MonoBehaviour
         }
 
         ContinueWarningMessage();
+
+        UpdateBossHealth();
     }
 
     public void SetGameOverProgress(float progress, bool showText = true)
@@ -291,6 +295,34 @@ public class PlayerInterface : MonoBehaviour
         float realProgress = Mathf.Min(progress, 1.0f);
 
         EndingText.color = new Color(EndingText.color.r, EndingText.color.g, EndingText.color.b, realProgress);
+    }
+
+    public void ShowBossHealth()
+    {
+        if (MainHUD != null)
+        {
+            MainHUD.rootVisualElement.Q<VisualElement>("BossHealthbar_over").style.visibility = Visibility.Visible;
+            MainHUD.rootVisualElement.Q<VisualElement>("BossHealthbar_under").style.visibility = Visibility.Visible;
+        }
+    }
+
+    public void HideBossHealth()
+    {
+        if (MainHUD != null)
+        {
+            MainHUD.rootVisualElement.Q<VisualElement>("BossHealthbar_over").style.visibility = Visibility.Hidden;
+            MainHUD.rootVisualElement.Q<VisualElement>("BossHealthbar_under").style.visibility = Visibility.Hidden;
+        }
+    }
+
+    public void UpdateBossHealth()
+    {
+        if (MainHUD != null && TrackedBoss != null)
+        {
+            float healthWidth = (float)TrackedBoss.CurrentHealth / (float)TrackedBoss.MaxHealth;
+            var healthbar = MainHUD.rootVisualElement.Q<VisualElement>("BossHealthbar");
+            healthbar.style.width = Length.Percent(healthWidth * 100);
+        }
     }
 
 }
