@@ -60,46 +60,21 @@ public class PlayerManager : MonoBehaviour
 
     public int RollStaminaCost = 20;
 
-    public float rollTime = 1.0f;
-
-    public float rollIStart = .25f;
-
-    public float rollIEnd = .85f;
-
-    private float rollTimer = 0f;
+    protected bool rollInvincible = false;
     public bool IsRollInvincible {
         get {
-            return rollTimer >= rollIStart && rollTimer <= rollIEnd;
+            return State == PlayerState.Rolling && rollInvincible;
         }
     }
 
-    public float attackLightTime = 0.75f;
-
-    public float attackLightHoldTime = 0.4f;
-
-    public float attackLightActiveStart = 7f / 24f;
-
-    public float attackLightActiveEnd = 14f / 24f;
-
-    public float attackLightMoveSpeed = 2f;
-
-    public float attackLightMoveStart = 7f / 24f;
-
-    public float attackLightMoveEnd = 12f / 24f;
-
-    public float attackHeavyTime = 1.5f;
-
-    public float attackHeavyHoldTime = 0.9f;
-
-    public float attackHeavyActiveStart = 16f / 24f;
-
-    public float attackHeavyActiveEnd = 24f / 24f;
-
-    public float attackHeavyMoveSpeed = 2f;
-
-    public float attackHeavyMoveStart = 14f / 24f;
-
-    public float attackHeavyMoveEnd = 19f / 24f;
+    protected bool rollMoving = false;
+    public bool IsRollMoving
+    {
+        get
+        {
+            return State == PlayerState.Rolling && rollMoving;
+        }
+    }
 
     private AttackIndex attackIndex;
 
@@ -111,19 +86,16 @@ public class PlayerManager : MonoBehaviour
 
     public int AttackHeavyStamina = 25;
 
-    private float attackTimer = 0f;
+    protected bool attackActive = false;
     public bool IsAttackActive
     {
         get
         {
-            if(State == PlayerState.AttackingLight)
+            if(State == PlayerState.AttackingLight || State == PlayerState.AttackingHeavy)
             {
-                return attackTimer >= attackLightActiveStart && attackTimer <= attackLightActiveEnd;
+                return attackActive;
             }
-            if(State == PlayerState.AttackingHeavy)
-            {
-                return attackTimer >= attackHeavyActiveStart && attackTimer <= attackHeavyActiveEnd;
-            }
+
             return false;
         }
     }
@@ -132,53 +104,37 @@ public class PlayerManager : MonoBehaviour
 
     public int AttackDamage { get; internal set; }
 
-    public float AttackTime
-    {
-        get
-        {
-            if (State == PlayerState.AttackingLight)
-            {
-                return attackLightTime + attackLightHoldTime;
-            }
-            if (State == PlayerState.AttackingHeavy)
-            {
-                return attackHeavyTime + attackHeavyHoldTime;
-            }
-            return 0f;
-        }
-    }
-
+    protected bool attackHolding = false;
     public bool IsAttackHolding
     {
         get
         {
-            if (State == PlayerState.AttackingLight)
+            if (State == PlayerState.AttackingLight || State == PlayerState.AttackingHeavy)
             {
-                return attackTimer >= attackLightTime && attackTimer <= AttackTime;
+                return attackHolding;
             }
-            if (State == PlayerState.AttackingHeavy)
-            {
-                return attackTimer >= attackHeavyTime && attackTimer <= AttackTime;
-            }
+
             return false;
         }
     }
 
+    protected bool attackMoving = false;
     public bool IsAttackMoving
     {
         get
         {
-            if (State == PlayerState.AttackingLight)
+            if (State == PlayerState.AttackingLight || State == PlayerState.AttackingHeavy)
             {
-                return attackTimer >= attackLightMoveStart && attackTimer <= attackLightMoveEnd;
+                return attackMoving;
             }
-            if (State == PlayerState.AttackingHeavy)
-            {
-                return attackTimer >= attackHeavyMoveStart && attackTimer <= attackHeavyMoveEnd;
-            }
+
             return false;
         }
     }
+
+    public float attackLightMoveSpeed = 2f;
+
+    public float attackHeavyMoveSpeed = 2f;
 
     public float AttackMoveSpeed
     {
@@ -404,7 +360,7 @@ public class PlayerManager : MonoBehaviour
 
     void HandleMovement()
     {
-        if (IsAttackHolding) return;
+        //if (IsAttackHolding) return;
 
         Vector3 finalMove = new Vector3(0,0,0);
 
@@ -594,13 +550,7 @@ public class PlayerManager : MonoBehaviour
 
     void ContinueRoll()
     {
-        rollTimer += Time.deltaTime;
-
-        if(rollTimer >= rollTime)
-        {
-            StopRoll();
-        }
-        else
+        if(State == PlayerState.Rolling)
         {
             Vector3 finalMove = new Vector3(targetFacing.x, 0, targetFacing.y) * rollSpeed;
             finalMove.y += gravityValue;
@@ -610,7 +560,8 @@ public class PlayerManager : MonoBehaviour
 
     void StopRoll(PlayerState endState = PlayerState.Ready)
     {
-        rollTimer = 0;
+        rollInvincible = false;
+        rollMoving = false;
         State = endState;
         modelAnimator.speed = 1.0f;
         modelAnimator.Play(Animator.StringToHash("RobogirlArmature|Idle"));
@@ -654,6 +605,11 @@ public class PlayerManager : MonoBehaviour
         if (IsAttacking())
         {
             ContinueAttacking();
+
+            if(modelAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime > 1 && !modelAnimator.IsInTransition(0))
+            {
+                StopAttacking();
+            }
         }
     }
 
@@ -690,10 +646,9 @@ public class PlayerManager : MonoBehaviour
         SetAttackId();
         SetAttackDamage(attackType);
 
-        if (IsAttackHolding)
-        {
-            attackTimer = 0;
-        }
+        attackActive = false;
+        attackHolding = false;
+        attackMoving = false;
 
         if (Camera.IsTargetLocked)
         {
@@ -758,30 +713,24 @@ public class PlayerManager : MonoBehaviour
 
     void ContinueAttacking()
     {
-        attackTimer += Time.deltaTime;
-
-        if (attackTimer >= AttackTime)
-        {
-            StopAttacking();
-        }
-        else if(IsAttackHolding)
+        if(IsAttackHolding)
         {
             CheckForAttack();
         }
-        else
+
+        if(IsAttackMoving)
         {
-            if (IsAttackMoving)
-            {
-                Vector3 finalMove = new Vector3(targetFacing.x, 0, targetFacing.y) * AttackMoveSpeed;
-                finalMove.y += gravityValue;
-                GetComponent<CharacterController>().Move(finalMove * Time.deltaTime);
-            }
+            Vector3 finalMove = new Vector3(targetFacing.x, 0, targetFacing.y) * AttackMoveSpeed;
+            finalMove.y += gravityValue;
+            GetComponent<CharacterController>().Move(finalMove * Time.deltaTime);
         }
     }
 
     void StopAttacking(PlayerState endState = PlayerState.Ready)
     {
-        attackTimer = 0;
+        attackActive = false;
+        attackMoving = false;
+        attackHolding = false;
         State = endState;
         attackIndex = AttackIndex.None;
         modelAnimator.CrossFade(Animator.StringToHash("RobogirlArmature|Idle"), 0.2f);
@@ -932,6 +881,11 @@ public class PlayerManager : MonoBehaviour
 
     void StandaloneHit(StandaloneAttack attack)
     {
+        if (IsRollInvincible)
+        {
+            return;
+        }
+
         EnactHit(attack.Damage, attack.GetFocusPosition(), attack.ForceStagger);
         attack.Connected();
     }
@@ -1447,6 +1401,72 @@ public class PlayerManager : MonoBehaviour
         Cursor.visible = false;
 
         DataManager.Instance.LoadMenu();
+    }
+
+    public void EventStartWeapon()
+    {
+        if (!IsAttacking()) return;
+
+        attackActive = true;
+    }
+
+    public void EventEndWeapon()
+    {
+        attackActive = false;
+    }
+
+    public void EventAttackMove()
+    {
+        if (!IsAttacking()) return;
+
+        attackMoving = true;
+    }
+
+    public void EventAttackHalt()
+    {
+        attackMoving = false;
+    }
+
+    public void EventAttackStartHolding()
+    {
+        if (!IsAttacking()) return;
+
+        attackHolding = true;
+    }
+
+    public void EventAttackStopHolding()
+    {
+        attackHolding = false;
+    }
+
+    public void EventAttackFinish()
+    {
+        //StopAttacking();
+    }
+
+    public void EventRollStartMoving()
+    {
+        rollMoving = true;
+    }
+
+    public void EventRollStopMoving()
+    {
+        rollMoving = false;
+    }
+
+    public void EventRollStartInv()
+    {
+        rollInvincible = true;
+    }
+
+    public void EventRollStopInv()
+    {
+        rollInvincible = false;
+    }
+
+    public void EventRollFinish()
+    {
+        StopRoll();
     }
 }
 

@@ -63,4 +63,64 @@ public class PlayerAnimationEvents : MonoBehaviour
     {
         PlayerManager.Instance.EventFinishOpen();
     }
+
+    public void EventStartWeapon()
+    {
+        PlayerManager.Instance.EventStartWeapon();
+    }
+
+    public void EventEndWeapon()
+    {
+        PlayerManager.Instance.EventEndWeapon();
+    }
+
+    public void EventAttackMove()
+    {
+        PlayerManager.Instance.EventAttackMove();
+    }
+
+    public void EventAttackHalt()
+    {
+        PlayerManager.Instance.EventAttackHalt();
+    }
+
+    public void EventAttackStartHolding()
+    {
+        PlayerManager.Instance.EventAttackStartHolding();
+    }
+
+    public void EventAttackStopHolding()
+    {
+        PlayerManager.Instance.EventAttackStopHolding();
+    }
+
+    public void EventAttackFinish()
+    {
+        PlayerManager.Instance.EventAttackFinish();
+    }
+
+    public void EventRollStartMoving()
+    {
+        PlayerManager.Instance.EventRollStartMoving();
+    }
+
+    public void EventRollStopMoving()
+    {
+        PlayerManager.Instance.EventRollStopMoving();
+    }
+
+    public void EventRollStartInv()
+    {
+        PlayerManager.Instance.EventRollStartInv();
+    }
+
+    public void EventRollStopInv()
+    {
+        PlayerManager.Instance.EventRollStopInv();
+    }
+
+    public void EventRollFinish()
+    {
+        PlayerManager.Instance.EventRollFinish();
+    }
 }
