@@ -384,7 +384,7 @@ MonoBehaviour:
   m_RendererIndex: -1
   m_VolumeLayerMask:
     serializedVersion: 2
-    m_Bits: 1
+    m_Bits: 119
   m_VolumeTrigger: {fileID: 0}
   m_VolumeFrameworkUpdateModeOption: 2
   m_RenderPostProcessing: 1
@@ -500,27 +500,12 @@ MonoBehaviour:
   SprintStaminaDrain: 4
   rollSpeed: 7
   RollStaminaCost: 20
-  rollTime: 1
-  rollIStart: 0.25
-  rollIEnd: 0.85
-  attackLightTime: 0.75
-  attackLightHoldTime: 0.4
-  attackLightActiveStart: 0.29166666
-  attackLightActiveEnd: 0.5833333
-  attackLightMoveSpeed: 4
-  attackLightMoveStart: 0.29166666
-  attackLightMoveEnd: 0.5
-  attackHeavyTime: 1.6666666
-  attackHeavyHoldTime: 0.73333335
-  attackHeavyActiveStart: 0.6666667
-  attackHeavyActiveEnd: 1
-  attackHeavyMoveSpeed: 4
-  attackHeavyMoveStart: 0.5833333
-  attackHeavyMoveEnd: 0.7916667
   AttackLightDamage: 15
   AttackLightStamina: 15
   AttackHeavyDamage: 35
   AttackHeavyStamina: 25
+  attackLightMoveSpeed: 4
+  attackHeavyMoveSpeed: 4
   BlockingAttackTime: 1
   BlockAngle: 45
   StaggerTime: 1
@@ -644,6 +629,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 6a5bc9d399a2b47419f49dd5ae030aea, type: 3}
       propertyPath: m_Name
       value: LockOn
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 6a5bc9d399a2b47419f49dd5ae030aea, type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
