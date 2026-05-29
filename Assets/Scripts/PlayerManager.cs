@@ -875,8 +875,8 @@ public class PlayerManager : MonoBehaviour
 
     void GetHit(Enemy attacker, bool forceStagger = false)
     {
-        attacker.NeutralizeAttack();
         EnactHit(attacker.AttackDamage, attacker.GetFocusPosition(), forceStagger);
+        attacker.NeutralizeAttack();
     }
 
     void StandaloneHit(StandaloneAttack attack)

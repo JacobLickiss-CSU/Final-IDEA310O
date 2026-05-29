@@ -253,6 +253,10 @@ PrefabInstance:
       propertyPath: m_TagString
       value: Enemy
       objectReference: {fileID: 0}
+    - target: {fileID: 7581859006593017064, guid: 0621dbb3c5804d449981813a58d65590, type: 3}
+      propertyPath: m_TagString
+      value: EnemyWeapon
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:
@@ -272,6 +276,12 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 0621dbb3c5804d449981813a58d65590, type: 3}
       insertIndex: -1
       addedObject: {fileID: 4967642764177046550}
+    - targetCorrespondingSourceObject: {fileID: 7581859006593017064, guid: 0621dbb3c5804d449981813a58d65590, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3565479004437405097}
+    - targetCorrespondingSourceObject: {fileID: 7581859006593017064, guid: 0621dbb3c5804d449981813a58d65590, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3301852209952884001}
   m_SourcePrefab: {fileID: 100100000, guid: 0621dbb3c5804d449981813a58d65590, type: 3}
 --- !u!1 &3475179398443092858 stripped
 GameObject:
@@ -320,6 +330,8 @@ MonoBehaviour:
   IdleAnimationName: SpectreArmature|Idle
   WalkAnimationName: SpectreArmature|Walk
   AttackAnimationName: SpectreArmature|Attack
+  AttackLongAnimationName: SpectreArmature|AttackLong
+  AttackQuickAnimationName: SpectreArmature|AttackQuick
   HitAnimationName: SpectreArmature|Hit
   DieAnimationName: SpectreArmature|Die
   MaxHealth: 120
@@ -338,8 +350,16 @@ MonoBehaviour:
   EngageTurnSpeed: 180
   gravityValue: -9.81
   MaxAttackAngle: 10
+  MaxQuickAttackAngle: 100
+  QuickAttackDistance: 8
+  QuickAttackMinDistance: 4
   AttackDamage: 15
+  AttackCooldown: 1.5
   attackMoveSpeed: 2
+  attackQuickSpeed: 6
+  HasAttackLong: 1
+  HasAttackQuick: 1
+  RetreatSpeed: 1
   HitEffect: {fileID: 1747636559562972692, guid: ce9a6e1ad4d1ddf46845e91cc447d586, type: 3}
   FootstepSound: {fileID: 8984663617908626158, guid: 637ff062d0126cc4a902dae3824a96e9, type: 3}
   SwingSound: {fileID: 8984663617908626158, guid: 5c91f289e8db3ce41be5addb48cabea7, type: 3}
@@ -400,3 +420,42 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 7563776116974377058, guid: 0621dbb3c5804d449981813a58d65590, type: 3}
   m_PrefabInstance: {fileID: 4394168060122625579}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &6179805144111862467 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7581859006593017064, guid: 0621dbb3c5804d449981813a58d65590, type: 3}
+  m_PrefabInstance: {fileID: 4394168060122625579}
+  m_PrefabAsset: {fileID: 0}
+--- !u!65 &3565479004437405097
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6179805144111862467}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.002, y: 0.0072832727, z: 0.002}
+  m_Center: {x: 0.000000006980874, y: 0.00314159, z: -0.000000004229164}
+--- !u!114 &3301852209952884001
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6179805144111862467}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 80fbad5772fe0944e8a72d3ff8e8f728, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyWeapon
+  Enemy: {fileID: 3475179398443092858}

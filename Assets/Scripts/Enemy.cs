@@ -13,6 +13,10 @@ public class Enemy : MonoBehaviour, IReset
 
     public string AttackAnimationName = "|Attack";
 
+    public string AttackLongAnimationName = "|AttackLong";
+
+    public string AttackQuickAnimationName = "|AttackQuick";
+
     public string HitAnimationName = "|Hit";
 
     public string DieAnimationName = "|Die";
@@ -61,6 +65,12 @@ public class Enemy : MonoBehaviour, IReset
 
     public float MaxAttackAngle = 10f;
 
+    public float MaxQuickAttackAngle = 100f;
+
+    public float QuickAttackDistance = 8f;
+
+    public float QuickAttackMinDistance = 4f;
+
     public int AttackDamage = 15;
 
     protected bool attackActive = false;
@@ -81,7 +91,39 @@ public class Enemy : MonoBehaviour, IReset
         }
     }
 
+    protected bool attackTracking = false;
+    public bool IsAttackTracking
+    {
+        get
+        {
+            return State == EnemyState.Attacking && attackTracking;
+        }
+    }
+
+    protected float attackCooldownTimer = 0f;
+    public bool IsAttackCooldown
+    {
+        get
+        {
+            return attackCooldownTimer > 0f;
+        }
+    }
+
+    protected EnemyAttack CurrentAttack = EnemyAttack.None;
+
+    protected EnemyAttack NextAttack = EnemyAttack.Normal;
+
+    public float AttackCooldown = 0.5f;
+
     public float attackMoveSpeed = 2f;
+
+    public float attackQuickSpeed = 6f;
+
+    public bool HasAttackLong = false;
+
+    public bool HasAttackQuick = false;
+
+    public float RetreatSpeed = 1f;
 
     protected Vector3 resetPosition;
 
@@ -120,6 +162,9 @@ public class Enemy : MonoBehaviour, IReset
         if(gameObject != null)
         {
             State = EnemyState.Ready;
+            CurrentAttack = EnemyAttack.None;
+            NextAttack = EnemyAttack.Normal;
+            attackCooldownTimer = 0f;
             transform.position = resetPosition;
             transform.rotation = resetRotation;
             if (gameObject.activeInHierarchy) agent.destination = homePosition;
@@ -132,6 +177,7 @@ public class Enemy : MonoBehaviour, IReset
             weaponTouching = false;
             attackActive = false;
             attackMoving = false;
+            attackTracking = false;
             GetComponent<CharacterController>().enabled = true;
         }
     }
@@ -155,9 +201,11 @@ public class Enemy : MonoBehaviour, IReset
             }
         }
 
+        attackCooldownTimer -= Time.deltaTime;
         HandleAwareness();
         ChasePlayer();
         ContinueAttacking();
+        ManagePersonalSpace();
     }
 
     protected virtual void HandleAwareness()
@@ -229,7 +277,14 @@ public class Enemy : MonoBehaviour, IReset
 
                 if(Vector3.Distance(transform.position, playerPos) > EngageDistance)
                 {
-                    agent.destination = playerPos;
+                    if (!IsAttackCooldown && Vector3.Distance(transform.position, playerPos) < QuickAttackDistance && Vector3.Distance(transform.position, playerPos) > QuickAttackMinDistance && HasAttackQuick)
+                    {
+                        StartAttack(EnemyAttack.Quick);
+                    }
+                    else
+                    {
+                        agent.destination = playerPos;
+                    }
                 }
                 else
                 {
@@ -258,21 +313,31 @@ public class Enemy : MonoBehaviour, IReset
 
     protected void EngagePlayer()
     {
-        Vector3 playerPos = PlayerManager.Instance.transform.position;
-
-        if (Vector3.Distance(transform.position, playerPos) < PersonalSpace)
-        {
-            Vector3 retreatDirection = transform.position - playerPos;
-            retreatDirection.Normalize();
-            retreatDirection *= PersonalSpace;
-            agent.destination = transform.position + retreatDirection;
-        }
-
         // Turn to face player (slowly)
         LookTowardsPlayer();
 
         // Engage attack behaviors
         ConsiderAttack();
+    }
+
+    protected virtual void ManagePersonalSpace()
+    {
+        if(GetComponent<CharacterController>().enabled)
+        {
+            Vector3 playerPos = PlayerManager.Instance.transform.position;
+
+            if (Vector3.Distance(transform.position, playerPos) < PersonalSpace)
+            {
+                Vector3 retreatDirection = transform.position - playerPos;
+                retreatDirection.y = 0f;
+                retreatDirection.Normalize();
+                retreatDirection *= RetreatSpeed * Time.deltaTime;
+                GetComponent<CharacterController>().enabled = false; // See https://discussions.unity.com/t/teleporting-character-issue-with-transform-position-in-unity-2018-3/221631/4
+                transform.position += retreatDirection;
+                GetComponent<CharacterController>().enabled = true;
+                //agent.destination = transform.position + retreatDirection;
+            }
+        }
     }
 
     protected void LookTowardsPlayer()
@@ -286,9 +351,9 @@ public class Enemy : MonoBehaviour, IReset
 
     protected void ConsiderAttack()
     {
-        if(PlayerAngle() <= MaxAttackAngle)
+        if(!IsAttackCooldown && PlayerAngle() <= MaxAttackAngle)
         {
-            StartAttack();
+            StartAttack(NextAttack);
         }
     }
 
@@ -443,13 +508,26 @@ public class Enemy : MonoBehaviour, IReset
         }
     }
 
-    protected void StartAttack()
+    protected void StartAttack(EnemyAttack type = EnemyAttack.Normal)
     {
         State = EnemyState.Attacking;
+        CurrentAttack = type;
         attackActive = false;
         attackMoving = false;
+        attackTracking = false;
         agent.isStopped = true;
-        CrossFadeIfExists(AttackAnimationName, 0.1f, true);
+        if (type == EnemyAttack.Long)
+        {
+            CrossFadeIfExists(AttackLongAnimationName, 0.1f, true);
+        }
+        else if (type == EnemyAttack.Quick)
+        {
+            CrossFadeIfExists(AttackQuickAnimationName, 0.1f, true);
+        }
+        else
+        {
+            CrossFadeIfExists(AttackAnimationName, 0.1f, true);
+        }
     }
 
     protected virtual void ContinueAttacking()
@@ -458,9 +536,15 @@ public class Enemy : MonoBehaviour, IReset
         {
             if (IsAttackMoving)
             {
-                Vector3 finalMove = transform.forward * attackMoveSpeed;
+                float speed = CurrentAttack == EnemyAttack.Quick ? attackQuickSpeed : attackMoveSpeed;
+                Vector3 finalMove = transform.forward * speed;
                 finalMove.y += gravityValue;
                 GetComponent<CharacterController>().Move(finalMove * Time.deltaTime);
+            }
+
+            if(IsAttackTracking)
+            {
+                LookTowardsPlayer();
             }
         }
     }
@@ -469,16 +553,29 @@ public class Enemy : MonoBehaviour, IReset
     {
         attackActive = false;
         attackMoving = false;
+        attackTracking = false;
         agent.isStopped = false;
         State = EnemyState.Stagger;
+        CurrentAttack = EnemyAttack.None;
     }
 
     protected void StopAttacking(EnemyState endState = EnemyState.Ready)
     {
         attackActive = false;
         attackMoving = false;
+        attackTracking = false;
         State = endState;
         agent.isStopped = false;
+        attackCooldownTimer = AttackCooldown;
+        if(CurrentAttack == EnemyAttack.Normal && HasAttackLong)
+        {
+            NextAttack = EnemyAttack.Long;
+        }
+        else
+        {
+            NextAttack = EnemyAttack.Normal;
+        }
+        CurrentAttack = EnemyAttack.None;
         CrossFadeIfExists(IdleAnimationName, 0.1f);
     }
 
@@ -567,6 +664,16 @@ public class Enemy : MonoBehaviour, IReset
     {
         StopAttacking();
     }
+
+    public virtual void StartTracking()
+    {
+        attackTracking = true;
+    }
+
+    public virtual void StopTracking()
+    {
+        attackTracking = false;
+    }
 }
 
 public enum EnemyState
@@ -577,4 +684,12 @@ public enum EnemyState
     Dead,
     Waiting,
     Intro
+}
+
+public enum EnemyAttack
+{
+    None,
+    Normal,
+    Long,
+    Quick
 }

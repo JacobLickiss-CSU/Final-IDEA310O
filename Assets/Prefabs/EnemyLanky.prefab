@@ -384,6 +384,8 @@ MonoBehaviour:
   IdleAnimationName: EnemyLankyArmature|LankyIdle
   WalkAnimationName: EnemyLankyArmature|LankyWalk
   AttackAnimationName: EnemyLankyArmature|LankyAttack
+  AttackLongAnimationName: '|AttackLong'
+  AttackQuickAnimationName: '|AttackQuick'
   HitAnimationName: EnemyLankyArmature|LankyStagger
   DieAnimationName: EnemyLankyArmature|LankyDie
   MaxHealth: 110
@@ -402,8 +404,16 @@ MonoBehaviour:
   EngageTurnSpeed: 180
   gravityValue: -9.81
   MaxAttackAngle: 15
+  MaxQuickAttackAngle: 100
+  QuickAttackDistance: 8
+  QuickAttackMinDistance: 4
   AttackDamage: 20
+  AttackCooldown: 0.5
   attackMoveSpeed: 0
+  attackQuickSpeed: 6
+  HasAttackLong: 0
+  HasAttackQuick: 0
+  RetreatSpeed: 2
   HitEffect: {fileID: 1747636559562972692, guid: ce9a6e1ad4d1ddf46845e91cc447d586, type: 3}
   FootstepSound: {fileID: 8984663617908626158, guid: 58ab6554caff2aa49ac64d558986335f, type: 3}
   SwingSound: {fileID: 8984663617908626158, guid: 799b5c346c8c4f14cae8bc6d53739699, type: 3}

@@ -449,12 +449,12 @@ public class Boss : Enemy, IReset
         isLanding = false;
     }
 
-    public void StartTracking()
+    public override void StartTracking()
     {
         isTracking = true;
     }
 
-    public void StopTracking()
+    public override void StopTracking()
     {
         isTracking = false;
     }
