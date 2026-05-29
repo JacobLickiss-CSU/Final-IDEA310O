@@ -11,6 +11,7 @@ TagManager:
   - Ending
   - TextTrigger
   - StandaloneAttack
+  - Lever
   layers:
   - Default
   - TransparentFX

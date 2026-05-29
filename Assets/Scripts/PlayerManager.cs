@@ -1318,6 +1318,17 @@ public class PlayerManager : MonoBehaviour
         openAttemptDoor = null;
     }
 
+    public void StartSwitch(Lever lever)
+    {
+        GetComponent<CharacterController>().enabled = false; // See https://discussions.unity.com/t/teleporting-character-issue-with-transform-position-in-unity-2018-3/221631/4
+        transform.position = lever.StandSpot.transform.position;
+        GetComponent<CharacterController>().enabled = true;
+        FacePosition(lever.transform.position);
+
+        StopAttacking();
+        StartAttacking(PlayerState.AttackingLight);
+    }
+
     void PlaySound(SoundPlayer player)
     {
         if (player != null) Instantiate(player.gameObject, transform);
