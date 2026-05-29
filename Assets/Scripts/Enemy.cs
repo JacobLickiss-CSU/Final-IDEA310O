@@ -11,6 +11,8 @@ public class Enemy : MonoBehaviour, IReset
 
     public string WalkAnimationName = "|Walk";
 
+    public string RunAnimationName = "|Run";
+
     public string AttackAnimationName = "|Attack";
 
     public string AttackLongAnimationName = "|AttackLong";
@@ -52,6 +54,12 @@ public class Enemy : MonoBehaviour, IReset
     public bool AwareThroughObstacles = false;
 
     public bool IsAware = false;
+
+    public bool DoesRun = false;
+
+    private float defaultSpeed;
+
+    public float RunSpeed = 8f;
 
     public float EngageDistance = 2f;
 
@@ -150,6 +158,11 @@ public class Enemy : MonoBehaviour, IReset
         resetPosition = transform.position;
         resetRotation = transform.rotation;
         DataManager.Instance.RegisterReset(this);
+
+        if(agent != null)
+        {
+            defaultSpeed = agent.speed;
+        }
     }
 
     protected void PrepareAnimationStates()
@@ -271,13 +284,29 @@ public class Enemy : MonoBehaviour, IReset
     {
         if(State == EnemyState.Ready)
         {
+            Vector3 playerPos = PlayerManager.Instance.transform.position;
+            float playerDistance = Vector3.Distance(transform.position, playerPos);
+            bool isRunning = false;
+
             if (IsAware)
             {
-                Vector3 playerPos = PlayerManager.Instance.transform.position;
-
-                if(Vector3.Distance(transform.position, playerPos) > EngageDistance)
+                if(DoesRun)
                 {
-                    if (!IsAttackCooldown && Vector3.Distance(transform.position, playerPos) < QuickAttackDistance && Vector3.Distance(transform.position, playerPos) > QuickAttackMinDistance && HasAttackQuick)
+                    if (playerDistance > 4f)
+                    {
+                        agent.speed = RunSpeed;
+                        isRunning = true;
+                    }
+                    else
+                    {
+                        agent.speed = defaultSpeed;
+                    }
+                }
+                
+
+                if (playerDistance > EngageDistance)
+                {
+                    if (!IsAttackCooldown && playerDistance < QuickAttackDistance && playerDistance > QuickAttackMinDistance && HasAttackQuick)
                     {
                         StartAttack(EnemyAttack.Quick);
                     }
@@ -299,7 +328,14 @@ public class Enemy : MonoBehaviour, IReset
 
             if(Vector3.Distance(transform.position, agent.destination) > .1f && !agent.isStopped)
             {
-                CrossFadeIfExists(WalkAnimationName, 0.1f);
+                if(isRunning)
+                {
+                    CrossFadeIfExists(RunAnimationName, 0.1f);
+                }
+                else
+                {
+                    CrossFadeIfExists(WalkAnimationName, 0.1f);
+                }
             }
             else
             {

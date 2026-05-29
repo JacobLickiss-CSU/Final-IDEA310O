@@ -329,6 +329,7 @@ MonoBehaviour:
   modelAnimator: {fileID: 4967642764177046550}
   IdleAnimationName: SpectreArmature|Idle
   WalkAnimationName: SpectreArmature|Walk
+  RunAnimationName: SpectreArmature|Run
   AttackAnimationName: SpectreArmature|Attack
   AttackLongAnimationName: SpectreArmature|AttackLong
   AttackQuickAnimationName: SpectreArmature|AttackQuick
@@ -340,11 +341,13 @@ MonoBehaviour:
   CurrentPoise: 25
   PoiseRegen: 4
   StaggerTime: 2
-  AwarenessDistance: 10
-  AwarenessOffset: 5
+  AwarenessDistance: 20
+  AwarenessOffset: 8
   ForgetDistance: 50
   AwareThroughObstacles: 0
   IsAware: 0
+  DoesRun: 1
+  RunSpeed: 8
   EngageDistance: 2
   PersonalSpace: 1
   EngageTurnSpeed: 180
@@ -363,9 +366,9 @@ MonoBehaviour:
   HitEffect: {fileID: 1747636559562972692, guid: ce9a6e1ad4d1ddf46845e91cc447d586, type: 3}
   FootstepSound: {fileID: 8984663617908626158, guid: 637ff062d0126cc4a902dae3824a96e9, type: 3}
   SwingSound: {fileID: 8984663617908626158, guid: 5c91f289e8db3ce41be5addb48cabea7, type: 3}
-  HitSound: {fileID: 0}
-  DieSound: {fileID: 0}
-  StaggerSound: {fileID: 0}
+  HitSound: {fileID: 8984663617908626158, guid: 152f3bee6c58aa740867b3f5c8c7b3c8, type: 3}
+  DieSound: {fileID: 8984663617908626158, guid: 8cef808922cda8245a675bec5be043c2, type: 3}
+  StaggerSound: {fileID: 8984663617908626158, guid: b7cb177cf84daa94798ca597c1b79de1, type: 3}
 --- !u!195 &2455203680934987430
 NavMeshAgent:
   m_ObjectHideFlags: 0

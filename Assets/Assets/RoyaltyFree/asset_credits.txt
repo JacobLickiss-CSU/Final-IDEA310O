@@ -43,3 +43,9 @@ Woosh 2 - https://freesound.org/people/gulfstreamav/sounds/842511/
 Whoosh 1 - https://freesound.org/people/sound.variant/sounds/807304/
 Chime 0001 - https://freesound.org/people/radian/sounds/62976/
 church_bell - https://freesound.org/people/sinewave1kHz/sounds/207355/
+
+-- Beast Sounds Volume 1 - audio-alchemist.itch.io/beast-animals-sounds
+
+Bat_Attack_01-04
+Bat_Death_01-02
+Bat_Wound_01-04
