@@ -27,6 +27,10 @@ public class PlayerInterface : MonoBehaviour
 
     public GameMenuManager MenuManager;
 
+    public GameObject ControlsMenuKey;
+
+    public GameObject ControlsMenuController;
+
     private InputAction menuAction;
 
     private IInteractable interactable = null;
@@ -48,6 +52,10 @@ public class PlayerInterface : MonoBehaviour
     private float warningMessageTimer = 0f;
 
     public Boss TrackedBoss = null;
+
+    private bool controlsOpen = false;
+
+    private string CurrentControlsScheme = "Keyboard&Mouse";
 
     public bool IsMenuOpen
     {
@@ -73,14 +81,20 @@ public class PlayerInterface : MonoBehaviour
             if (MenuManager.gameObject.activeSelf)
             {
                 MenuManager.Continue();
+                CloseControls();
             }
             else
             {
                 MenuManager.Open();
+                CloseControls();
             }
         }
 
         UpdateHUD();
+        if(IsMenuOpen)
+        {
+            UpdateControls();
+        }
     }
 
     void UpdateHUD()
@@ -229,6 +243,8 @@ public class PlayerInterface : MonoBehaviour
     {
         if(controlScheme == null) return;
 
+        CurrentControlsScheme = controlScheme;
+
         if(MainHUD != null)
         {
             var interactImage = MainHUD.rootVisualElement.Q<UnityEngine.UIElements.Image>("InteractImage");
@@ -325,4 +341,19 @@ public class PlayerInterface : MonoBehaviour
         }
     }
 
+    public void ToggleControls()
+    {
+        controlsOpen = !controlsOpen;
+    }
+
+    public void CloseControls()
+    {
+        controlsOpen = false;
+    }
+
+    public void UpdateControls()
+    {
+        ControlsMenuKey.SetActive(controlsOpen && CurrentControlsScheme == "Keyboard&Mouse");
+        ControlsMenuController.SetActive(controlsOpen && CurrentControlsScheme == "Gamepad");
+    }
 }
