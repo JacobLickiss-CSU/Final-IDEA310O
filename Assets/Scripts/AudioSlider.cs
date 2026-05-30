@@ -43,7 +43,6 @@ public class AudioSlider : MonoBehaviour
     // See https://discussions.unity.com/t/how-do-i-make-a-change-a-volume-with-a-slider/154975/4
     public void SetMusicVolume(float _value)
     {
-        Debug.Log("Set music volume to " + _value);
         mixer.SetFloat(musicName, ConvertToDecibel(_value / MaxValue)); //Dividing by max allows arbitrary positive slider maxValue
         PlayerPrefs.SetFloat(musicName, _value);
     }
@@ -51,7 +50,6 @@ public class AudioSlider : MonoBehaviour
     // See https://discussions.unity.com/t/how-do-i-make-a-change-a-volume-with-a-slider/154975/4
     public void SetEffectsVolume(float _value)
     {
-        Debug.Log("Set effects volume to " + _value);
         mixer.SetFloat(effectsName, ConvertToDecibel(_value / MaxValue)); //Dividing by max allows arbitrary positive slider maxValue
         PlayerPrefs.SetFloat(effectsName, _value);
     }
