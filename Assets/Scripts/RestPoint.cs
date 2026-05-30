@@ -35,7 +35,10 @@ public class RestPoint : MonoBehaviour, IInteractable
 
     void OnDestroy()
     {
-        interactAction.started -= AttemptInteract;
+        if (interactAction != null)
+        {
+            interactAction.started -= AttemptInteract;
+        }
     }
 
     public float GetInteractDistance()
