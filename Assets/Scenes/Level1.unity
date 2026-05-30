@@ -23202,17 +23202,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 03e97c434f5113d40a6697706b0bef91, type: 3}
---- !u!114 &751716420 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 4231055514154024219, guid: 7988dcf10b455734799e19b28d32f580, type: 3}
-  m_PrefabInstance: {fileID: 1008985563}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
 --- !u!4 &755021012 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6211364818403016956, guid: 716ea0842e35ca24d886266cc3a3f5de, type: 3}
@@ -26446,11 +26435,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9d4e3ba2be0ac79439176c552d28ce68, type: 3}
---- !u!1 &995331568 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 1000510701147556041, guid: 7988dcf10b455734799e19b28d32f580, type: 3}
-  m_PrefabInstance: {fileID: 1008985563}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &996454496
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -26795,45 +26779,9 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 7798093033252526, guid: 7988dcf10b455734799e19b28d32f580, type: 3}
-      propertyPath: m_AnchoredPosition.x
-      value: 30
-      objectReference: {fileID: 0}
-    - target: {fileID: 141484289819629197, guid: 7988dcf10b455734799e19b28d32f580, type: 3}
-      propertyPath: m_AnchorMax.x
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 141484289819629197, guid: 7988dcf10b455734799e19b28d32f580, type: 3}
-      propertyPath: m_AnchorMax.y
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 212305833105225482, guid: 7988dcf10b455734799e19b28d32f580, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 1055585545743936883, guid: 7988dcf10b455734799e19b28d32f580, type: 3}
       propertyPath: m_Name
       value: PlayerInterface
-      objectReference: {fileID: 0}
-    - target: {fileID: 1322938555855588378, guid: 7988dcf10b455734799e19b28d32f580, type: 3}
-      propertyPath: m_AnchorMax.x
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1322938555855588378, guid: 7988dcf10b455734799e19b28d32f580, type: 3}
-      propertyPath: m_AnchorMax.y
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1322938555855588378, guid: 7988dcf10b455734799e19b28d32f580, type: 3}
-      propertyPath: m_AnchorMin.x
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1830708317360869346, guid: 7988dcf10b455734799e19b28d32f580, type: 3}
-      propertyPath: m_AnchorMax.x
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1830708317360869346, guid: 7988dcf10b455734799e19b28d32f580, type: 3}
-      propertyPath: m_AnchorMax.y
-      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3362280435903486929, guid: 7988dcf10b455734799e19b28d32f580, type: 3}
       propertyPath: m_LocalPosition.x
@@ -26873,38 +26821,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3362280435903486929, guid: 7988dcf10b455734799e19b28d32f580, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3915728207550035074, guid: 7988dcf10b455734799e19b28d32f580, type: 3}
-      propertyPath: ControlsMenuKey
-      value: 
-      objectReference: {fileID: 1141119728}
-    - target: {fileID: 3915728207550035074, guid: 7988dcf10b455734799e19b28d32f580, type: 3}
-      propertyPath: WarningMessageBack
-      value: 
-      objectReference: {fileID: 1489718195}
-    - target: {fileID: 3915728207550035074, guid: 7988dcf10b455734799e19b28d32f580, type: 3}
-      propertyPath: WarningMessageText
-      value: 
-      objectReference: {fileID: 751716420}
-    - target: {fileID: 3915728207550035074, guid: 7988dcf10b455734799e19b28d32f580, type: 3}
-      propertyPath: ControlsMenuController
-      value: 
-      objectReference: {fileID: 995331568}
-    - target: {fileID: 6980704558124405773, guid: 7988dcf10b455734799e19b28d32f580, type: 3}
-      propertyPath: m_AnchorMax.x
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 6980704558124405773, guid: 7988dcf10b455734799e19b28d32f580, type: 3}
-      propertyPath: m_AnchorMax.y
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 6980704558124405773, guid: 7988dcf10b455734799e19b28d32f580, type: 3}
-      propertyPath: m_AnchorMin.x
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 7802761202644558496, guid: 7988dcf10b455734799e19b28d32f580, type: 3}
-      propertyPath: m_Color.a
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -28664,11 +28580,6 @@ Transform:
 Transform:
   m_CorrespondingSourceObject: {fileID: 4432896728546135837, guid: 25e9e3fa855420f43b666928b371e3ca, type: 3}
   m_PrefabInstance: {fileID: 370024173}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &1141119728 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 8222107817316843624, guid: 7988dcf10b455734799e19b28d32f580, type: 3}
-  m_PrefabInstance: {fileID: 1008985563}
   m_PrefabAsset: {fileID: 0}
 --- !u!4 &1150145478 stripped
 Transform:
@@ -34184,17 +34095,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: cdc6acb6b97c25a44a7b166baf650c73, type: 3}
---- !u!114 &1489718195 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 5110901638410652428, guid: 7988dcf10b455734799e19b28d32f580, type: 3}
-  m_PrefabInstance: {fileID: 1008985563}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
 --- !u!1001 &1491465486
 PrefabInstance:
   m_ObjectHideFlags: 0

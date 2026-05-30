@@ -3,6 +3,8 @@ using UnityEngine.EventSystems;
 
 public class GameMenuManager : MonoBehaviour
 {
+    public GameObject SaveWarning;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -20,6 +22,7 @@ public class GameMenuManager : MonoBehaviour
     public void Open()
     {
         gameObject.SetActive(true);
+        SaveWarning.SetActive(false);
 
         GameObject ContinueButton = GameObject.Find("ContinueButton");
         if (ContinueButton)
@@ -46,13 +49,20 @@ public class GameMenuManager : MonoBehaviour
 
     public void MainMenu()
     {
-        // Unpause time
-        Time.timeScale = 1.0f;
+        if(SaveWarning.activeSelf)
+        {
+            // Unpause time
+            Time.timeScale = 1.0f;
 
-        // Hide the cursor
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
+            // Hide the cursor
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
 
-        DataManager.Instance.LoadMenu();
+            DataManager.Instance.LoadMenu();
+        }
+        else
+        {
+            SaveWarning.SetActive(true);
+        }
     }
 }
