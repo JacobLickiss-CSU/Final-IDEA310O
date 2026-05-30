@@ -26,6 +26,8 @@ StoneDrag1 - StoneDrag4 - foley audio
 StoneDragHit1 - StoneDragHit3 - foley audio
 swordStone1 - foley audio
 platesHit8 - foley audio
+audioOn - Game Icons
+musicOn - GameIcons
 
 -- Dark Fantasy Studio - Forever and a day (Nicolas Jeudy) -- https://darkfantasystudio.itch.io/forever-and-a-day
 
