@@ -527,6 +527,9 @@ MonoBehaviour:
   BlockSound: {fileID: 8984663617908626158, guid: ed88c86c8382f75479369270e4c5fdf4, type: 3}
   StaggerSound: {fileID: 8984663617908626158, guid: f0a1dfa20c93a9742b2891cd4179ae94, type: 3}
   TextWarning: {fileID: 8984663617908626158, guid: bd4e22c6ee004274f84e0d6f2f2c26fe, type: 3}
+  DoorAjarSound: {fileID: 8984663617908626158, guid: 395cd3e2997f5bb439368e02530a7c5e, type: 3}
+  DoorOpenSound: {fileID: 8984663617908626158, guid: 2323bc622d5c4b54aa1d2ce14b46d93c, type: 3}
+  DoorSwordSound: {fileID: 8984663617908626158, guid: 266fc21cca795f04882e048511959eef, type: 3}
   EndingJumpSpeed: 1
   EndingTarget: {fileID: 0}
   EndingFadeDelay: 1

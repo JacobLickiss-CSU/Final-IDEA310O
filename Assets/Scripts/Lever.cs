@@ -19,6 +19,8 @@ public class Lever : MonoBehaviour, IInteractable
 
     public float SwitchSpeed = 3f;
 
+    public SoundPlayer SwitchSound;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -56,6 +58,11 @@ public class Lever : MonoBehaviour, IInteractable
 
     public void Switch()
     {
+        if(!Position)
+        {
+            PlaySound(SwitchSound);
+        }
+
         leverDoor?.Open();
         Position = true;
     }
@@ -132,5 +139,10 @@ public class Lever : MonoBehaviour, IInteractable
     void Interact()
     {
         PlayerManager.Instance.StartSwitch(this);
+    }
+
+    void PlaySound(SoundPlayer player)
+    {
+        if (player != null) Instantiate(player.gameObject, transform);
     }
 }

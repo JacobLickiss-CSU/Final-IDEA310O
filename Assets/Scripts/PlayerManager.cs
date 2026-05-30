@@ -229,6 +229,12 @@ public class PlayerManager : MonoBehaviour
 
     public SoundPlayer TextWarning;
 
+    public SoundPlayer DoorAjarSound;
+
+    public SoundPlayer DoorOpenSound;
+
+    public SoundPlayer DoorSwordSound;
+
     private bool endingJumped = false;
 
     public float EndingJumpSpeed = 1f;
@@ -630,7 +636,7 @@ public class PlayerManager : MonoBehaviour
         }
     }
 
-    void StartAttacking(PlayerState attackType)
+    void StartAttacking(PlayerState attackType, AttackIndex forceAttack = AttackIndex.None)
     {
         if(attackType != PlayerState.AttackingLight && attackType != PlayerState.AttackingHeavy)
         {
@@ -658,7 +664,7 @@ public class PlayerManager : MonoBehaviour
         State = attackType;
         LookTowardsFacing(true, !Camera.IsTargetLocked);
 
-        attackIndex = GetNextAttackIndex(attackIndex, attackType);
+        attackIndex = forceAttack != AttackIndex.None ? forceAttack : GetNextAttackIndex(attackIndex, attackType);
         modelAnimator.CrossFade(Animator.StringToHash(attackIndex.GetAnimation()), 0.2f, 0);
     }
 
@@ -1326,7 +1332,7 @@ public class PlayerManager : MonoBehaviour
         FacePosition(lever.transform.position);
 
         StopAttacking();
-        StartAttacking(PlayerState.AttackingLight);
+        StartAttacking(PlayerState.AttackingHeavy, AttackIndex.AttackHeavy2);
     }
 
     void PlaySound(SoundPlayer player)
@@ -1478,6 +1484,21 @@ public class PlayerManager : MonoBehaviour
     public void EventRollFinish()
     {
         StopRoll();
+    }
+
+    public void EventDoorSwordSound()
+    {
+        PlaySound(DoorSwordSound);
+    }
+
+    public void EventDoorAjarSound()
+    {
+        PlaySound(DoorAjarSound);
+    }
+
+    public void EventDoorOpenSound()
+    {
+        PlaySound(DoorOpenSound);
     }
 }
 

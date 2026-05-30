@@ -123,4 +123,19 @@ public class PlayerAnimationEvents : MonoBehaviour
     {
         PlayerManager.Instance.EventRollFinish();
     }
+
+    public void EventDoorSwordSound()
+    {
+        PlayerManager.Instance.EventDoorSwordSound();
+    }
+
+    public void EventDoorAjarSound()
+    {
+        PlayerManager.Instance.EventDoorAjarSound();
+    }
+
+    public void EventDoorOpenSound()
+    {
+        PlayerManager.Instance.EventDoorOpenSound();
+    }
 }

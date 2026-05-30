@@ -19,10 +19,13 @@ Select_003 - Select_005 - interface sounds
 forceField_000 - forceField_005 - sci-fi sounds
 Zap1 - Zap2 - digital audio
 Cloth2 - Cloth4 - RPG audio
+doorOpen_1 - RPG audio
 Woosh1 - Woosh8 - foley audio
 StoneHit1 - StoneHit5 - foley audio
 StoneDrag1 - StoneDrag4 - foley audio
 StoneDragHit1 - StoneDragHit3 - foley audio
+swordStone1 - foley audio
+platesHit8 - foley audio
 
 -- Dark Fantasy Studio - Forever and a day (Nicolas Jeudy) -- https://darkfantasystudio.itch.io/forever-and-a-day
 

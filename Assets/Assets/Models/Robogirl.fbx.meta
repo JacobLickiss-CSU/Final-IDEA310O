@@ -924,8 +924,22 @@ ModelImporter:
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
       events:
-      - time: 1
-        functionName: EventFinishOpen
+      - time: 0.13496932
+        functionName: EventDoorSwordSound
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: 0.27607363
+        functionName: EventFootstep
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: 0.28469393
+        functionName: EventFootstep
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
@@ -933,6 +947,27 @@ ModelImporter:
         messageOptions: 0
       - time: 0.7666667
         functionName: EventOpenFully
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: 1
+        functionName: EventFinishOpen
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: 0.5582822
+        functionName: EventDoorAjarSound
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: 0.73006135
+        functionName: EventDoorOpenSound
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
